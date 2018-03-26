@@ -1,0 +1,77 @@
+Authors: Jamie Wolff - NCAR/RAL (jwolff@ucar.edu) and Michelle Harrold - NCAR/RAL (harrold@ucar.edu)
+
+Purpose: Plot a time series of SURFRAD observations against model data
+
+General Steps and Inputs/Outputs:
+
+**** Process SURFRAD observations ****
+First, download necessary SURFRAD observation files from: ftp://aftp.cmdl.noaa.gov/data/radiation/surfrad/
+
+The run_ascii2nc.ksh script sets necessary, user-specified environment variables in order to run
+the Model Evaluation Tools (MET) ascii2nc tool. Ascii2nc was implemented to allow additional processing 
+of observations with high temporal resolution. Ascii2nc will read the SURFRAD data in ascii format
+and output a NetCDF file with time summary information, which is then read into the NCL code described below.
+The ascii2nc configuration file requires that several variables be set in the run_ascii2nc.ksh:
+
+Specify grib code of desired radiation variable
+ 204 = downward shortwave
+ 205 = downward longwave
+ 211 = upward shortwave
+ 212 = upward longwave
+For example:
+ grib_code=204
+
+Time step - time between intervals in seconds
+ time_step_sec=21600
+
+List time widths (is a list, can have multiple entries) - time width of summary intervals in minutes
+ time_width_list="360"
+
+Statistic for time summary
+ stat="median"
+
+Statistic type low value
+ stat_low="min"
+
+Statistic type high value
+ stat_high="max"
+
+This example does a 6-hour time summary every 6 hours throughout the day and calulates
+the median, min, and max of the SURFRAD data sample.
+
+In addition, the script has several variables to be set depending on the data set:
+SURFRAD station list
+ stid_list="bon dra fpk gwn psu sxf tbl"
+
+List of initializations to process (can be multiple intializations)
+ init_list=2017092500
+
+Length of model forecast
+ fcst_length=120
+
+More information on the MET ascii2nc tool can be found in the MET Users' Guide:
+https://dtcenter.org/met/users/docs/users_guide/MET_Users_Guide_v6.1.pdf
+
+**** Create a time series plot of SURFRAD vs model data ****
+ - Note, you first must create a processed SURFRAD observation file using the steps described above to output one statistic (e.g., median, mean) and a window of low/high values (e.g., min/max, p10/p90) for one particular variable (e.g., Downward SW radiation flux).
+
+1. Modify run_model_vs_surfrad_plot.ksh
+ - Set the following lists depending on what you want to loop through and process:
+   - date_list: Initial date you want to plot [Format yyyymmdd (e.g., 20170925)]
+   - init_list: Initial hour you want to plot [Format hh (e.g., 00)]
+   - twindow_list: Time window that the SURFRAD observations are processed over [in minutes (e.g., 360)]
+   - site_list: Stations you want to plot time series at [Format xxx (e.g., dra)]
+   - grib_code_lst: Grib code of variables you want to plot [Format ### (e.g., 204)]
+      - 204 = downward shortwave
+      - 205 = downward longwave
+      - 211 = upward shortwave
+      - 212 = upward longwave
+
+2. Depending on the length of forecast, you may need to modify the following lines in model_vs_surfrad_plot.ncl 
+   - res@tmXBValues = (/0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19/)
+   - res@tmXBLabels = (/"06","12", "18", "00", "06", "12", "18", "00", "06", "12", "18", "00", "06", "12", "18", "00", "06", "12", "18", "00"/)
+   - res@trXMaxF    = 19
+
+3. Depending on the values of the variable plotted, you may need to modify the following lines in model_vs_surfrad_plot.ncl
+   - res@trYMinF    = -50.0
+   - res@trYMaxF    = 1250.0

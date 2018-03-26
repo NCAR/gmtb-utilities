@@ -1,0 +1,29 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Default ascii2nc configuration file
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// The parameters listed below are used to summarize the ASCII data read in
+//
+
+//
+// Time periods for the summarization
+//
+
+time_summary = {
+  flag = TRUE;
+  beg = "000000";
+  end = "235959";
+  step = ${time_step_sec};
+  width = ${time_width_sec};
+  grib_code = [ ${grib_code} ];
+  type = [ "${stat}", "${stat_low}", "${stat_high}" ];
+}
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+version = "V6.0";
