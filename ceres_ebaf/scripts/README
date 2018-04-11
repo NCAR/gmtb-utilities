@@ -1,0 +1,37 @@
+Authors: Man Zhang - NOAA/GSD and CU/CIRES (Man.Zhang@noaa.gov) 
+
+Purpose: Plot the monthly mean difference of GFS 6-hourly forecasts against CERES-EBAF-4.0 data
+
+
+First, download necessary CERES EBAF product files from: 
+https://ceres.larc.nasa.gov/index.php
+
+
+- GFS model output are interpolated to the CERES 1deg grid ("GCR") first (using wgrib2 tool). 
+  + http://www.cpc.noaa.gov/products/wesley/wgrib2/
+
+- Zonal average are added  to the rightof the global geographic map, with global mean as reference line.
+
+- There are 7 NCEP UPP outputs comparable to CERES Energy Balanced and Filled (EBAF) monthly data. They are
+  + DSWRF_surface(time, latitude, longitude)
+  + DLWRF_surface(time, latitude, longitude)
+  + USWRF_surface(time, latitude, longitude)
+  + ULWRF_surface(time, latitude, longitude)
+  + USWRF_topofatmosphere(time, latitude, longitude)
+  + ULWRF_topofatmosphere(time, latitude, longitude)
+  + TCDC_entireatmosphere(time, latitude, longitude)
+
+- GFS day01 monthly climatology uses daily 06/12/18/24 h fcst averaged between 2016 June 1 and June 30.
+  + To verify the prediction, we can check the monthly climatology calculated using the increasing leading time (e.g. day03,05,07,09,11)
+  + GFS 2016 July monthly mean calculation method:
+
+    Monthly Climatology     |  Leading time(h) average      |   GFS initial time
+----------------------------|-------------------------------|-----------------------------
+       DY01                 |     06/12/18/24               | 00 UTC Jul 1 - 00 UTC Jul 31
+       DY03                 |     54/60/66/72               | 00 UTC Jun 29 - 00 UTC Jul 29
+       DY05                 |    102/108/114/120            | 00 UTC Jun 27 – 00 UTC Jul 27
+       DY07                 |    150/156/162/168            | 00 UTC Jun 25 - 00 UTC Jul 25
+----------------------------|-------------------------------|-------------------------------
+
+- The error in global average is calculated as the difference in global average for the modeled solution versus the global average of CERES-EBAF observation, normalized by the observed global average.
+
