@@ -10,16 +10,17 @@ begin
 ; read in netCDF file
 ;************************************************
    
-   model="sas"   ; experiment name using GFS model  
+   model="gf"   ; experiment name using GFS model  
    year="2016"  
    month="07"
    grid="GCR"   ; plot on CERES-EBAF 1 degree map
    ldy="03"   ; leading day (01,03,05,07,09,11)
 
 ; plot variables
-   VarGFS = "TCDC_entireatmosphere"       ;Total Cloud Cover
-   ;VarGFS = "ULWRF_topofatmosphere"       ;TOA Upward longwave radiation flux
-   ; VarGFS = "USWRF_topofatmosphere"     ;TOA Upward shortwave radiation flux
+   ;VarGFS = "DSWRF_surface"        ;SFC Downward shortwave radiation flux
+   ;VarGFS = "DLWRF_surface"       ;SFC Downward longwave radiation flux
+   VarGFS = "USWRF_surface"       ;SFC Upward shortwave radiation flux
+   ;VarGFS = "ULWRF_surface"       ;SFC Upward longwave radiation flux
 
    expname=str_upper(model)+"CTRL"
 
@@ -105,36 +106,42 @@ begin
    f    = addfiles(fili,"r") 
    ListSetType(f,"join")
 
-  if (VarGFS .eq. "TCDC_entireatmosphere") then
-     data = f[:]->TCDC_entireatmosphere
-  else if (VarGFS .eq. "ULWRF_topofatmosphere") then
-     data = f[:]->ULWRF_topofatmosphere
-  else if (VarGFS .eq. "USWRF_topofatmosphere") then
-     data = f[:]->USWRF_topofatmosphere
+  if (VarGFS .eq. "DSWRF_surface") then
+     data = f[:]->DSWRF_surface
+  else if (VarGFS .eq. "DLWRF_surface") then
+     data = f[:]->DLWRF_surface
+  else if (VarGFS .eq. "USWRF_surface") then
+     data = f[:]->USWRF_surface
+  else if (VarGFS .eq. "ULWRF_surface") then
+     data = f[:]->ULWRF_surface
   else
      print ("not an valid Rad variable in GFS, exit")
      exit()
   end if
   end if
   end if
+  end if
 
 
    printVarSummary(data)
-   printMinMax(data,0)
+;   printMinMax(data,0)
 
 
 ;*********************************************************
-  toadata="CERES_EBAF-TOA_Edition4.0_200003-201709.nc"
+  toadata="CERES_EBAF-Surface_Edition4.0_200003-201706.nc"
   a = addfile(obsdir+toadata,"r")
-  if (VarGFS .eq. "TCDC_entireatmosphere") then
-     rdata=a->cldarea_total_daynight_mon(mon,:,:)
-  else if (VarGFS .eq. "ULWRF_topofatmosphere") then
-     rdata = a->toa_lw_all_mon(mon,:,:)
-  else if (VarGFS .eq. "USWRF_topofatmosphere") then
-     rdata = a->toa_sw_all_mon(mon,:,:)
+  if (VarGFS .eq. "DSWRF_surface") then
+     rdata=a->sfc_sw_down_all_mon(mon,:,:)        ; surface_downwelling_shortwave_flux_in_air
+  else if (VarGFS .eq. "DLWRF_surface") then
+     rdata = a->sfc_lw_down_all_mon(mon,:,:)      ; surface_downwelling_longwave_flux_in_air
+  else if (VarGFS .eq. "USWRF_surface") then
+     rdata = a->sfc_sw_up_all_mon(mon,:,:)        ; surface_upwelling_shortwave_flux_in_air
+  else if (VarGFS .eq. "ULWRF_surface") then
+     rdata = a->sfc_lw_up_all_mon(mon,:,:)        ; surface_upwelling_longwave_flux_in_air
   else
      print ("not an valid Rad variable in CERES, exit")
      exit()
+  end if
   end if
   end if
   end if
@@ -167,9 +174,9 @@ begin
   res@txFontHeightF     = 0.015 
 
   res@cnLevelSelectionMode = "ManualLevels"	; manually set the contour levels with the following 3 resources
-  res@cnMinLevelValF  = -30.			; set the minimum contour level
-  res@cnMaxLevelValF  = 30.			; set the maximum contour level
-  res@cnLevelSpacingF = 5.			; set the interval between contours
+  res@cnMinLevelValF  = -50.			; set the minimum contour level
+  res@cnMaxLevelValF  = 50.			; set the maximum contour level
+  res@cnLevelSpacingF = 10.			; set the interval between contours
 
   res@vpXF            = 0.1                 ; make plot bigger
   res@vpYF            = 0.9         
