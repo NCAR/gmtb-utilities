@@ -1,0 +1,31 @@
+Author:  Daniel Halperin - Embry-Riddle Aeronautical University ((Daniel.Halperin@erau.edu)
+
+The purpose of TC genesis verification:
+
+This verification  is currently done to match as closely as possible the way NHC verifies their Tropical Weather Outlook forecasts. For our purposes, we consider the model forecast genesis time/location to be the first entry where our genesis criteria are met.  This may be analogous to the first entry in Tim Marchok's tracker. The code follows these steps:
+
+- Remove any model genesis forecasts whose forecast genesis time is at forecast hour 000. We assume these are existing TCs - not forecasts of TC genesis.
+
+- For each model genesis forecast, find all entries in the best-track (ATCF b-decks) that (i) have a time stamp that matches the valid time of the model genesis forecast and (ii) have a lat/lon within 5 degrees of the model indicated TC lat/lon at the valid time of the model genesis forecast.
+
+   a. If the initialization time is 0-120 h before the best-track genesis time (defined as first entry of TD or TS in the b-decks), then we have a "hit."
+   b. If the initialization time is > 120 h before the best-track genesis time, then we have a false alarm.
+   c. If the initialization time is after the best-track genesis time, we discard that forecast.
+
+- If there are no matches in the b-decks, conduct the same steps as above, but instead check for CARQ entries of DB, LO, and WV in the ATCF a-decks.
+
+The users may want to modify these steps to fit your particular application. For example, you may want to require that the model forecast genesis valid time is within 24 h of the best-track genesis time to qualify as a hit.
+
+
+About the scripts:
+
+- The verification data are in three files:
+   a. a file with the first b-deck entry of a TD or TS for each TC (i.e. gentimefinal2016.txt).
+   b. a file with all b-deck entries of TD, TS, HU, LO, DB, and WV (i.e. btallfinal2016.txt).
+   c. a file with all OFCL a-deck entries for TD, TS, and HU, and all CARQ a-deck entries for LO, DB, and WV (i.e. adecks.txt)
+
+  You can concatenate all of the basins into each file (AL and EP data are included in the example files), but all data included should be from the same year.
+
+- The code was developed for cases in the AL, EP, and CP basins. Therefore, it includes an if statement to check if a TC genesis event in the model occurs in the N and W hemispheres before continuing. This can be modified if you wish to verify genesis forecasts globally.
+
+- The inputs for the code are the three text files attached and a file that lists all of the TG files to be processed. They can be hard-coded near the top of the script, or provided on the command line as arguments.
