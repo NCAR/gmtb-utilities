@@ -1,0 +1,91 @@
+Authors: Jamie Wolff - NCAR/RAL (jwolff@ucar.edu) and Michelle Harrold - NCAR/RAL (harrold@ucar.edu)
+
+Purpose: Plot a Hovmoller diagram (time/longitude) of accumulated precipitation averaged over a latitude band.
+
+Notes: This script currently assumes using model output in GRIB1/2 format and CMORPH data in binary or NetCDF format.
+
+General Steps and Inputs/Outputs:
+
+**** Obtain CMORPH observations ****
+CMORPH is available in several file formats and at different resolutions. For more information on CMORPH data, please see: http://www.cpc.noaa.gov/products/janowiak/cmorph.html
+
+CMORPH data is available via the UCAR Research Data Archive:
+ https://rda.ucar.edu/datasets/ds502.1/
+ https://rda.ucar.edu/datasets/ds502.0/
+
+The data used in GMTB testing and in this example was obtained from http://ftp.cpc.ncep.noaa.gov/precip/global_CMORPH/
+
+The GMTB used 8km 30 minute data.
+
+**** Process CMORPH observations ****
+
+This step is not necessary, but if you have binary 8km 30 minute data, you can use the cmorph8km2nc.ncl script to covert the binary data to NetCDF. You will need to provide the input file to convert in the NCL script on line 75.
+
+**** Run CMORPH data and model output through MET pcp-combine ****
+
+The run_pcp_combine.ksh script sets necessary, user-specified environment variables in order to run the Model Evaluation Tools (MET) pcp-combine tool. The script pre-processes CMORPH data in NetCDF format (see steps above for processing binary CMORPH data) and model output in GRIB2 format in order to read it into plot_hovmoller.ncl (see instructions below). Using the MET pcp-combine tool, CMORPH and model data are output in NetCDF format in user-specified accumulations. Note that only accumulation times of 06-h and 24-h have been tested. Also, this has been heavily tested on Theia, but with a MET compilation, NCO tools, and NCL, it can work on other platforms as well.
+
+The script requires that several variables be set:
+
+# Path to base Hovmoller testing base directory
+# Note, this script assumes a particular directory structure:
+# $base/scripts --> directory where met_pcpi_combine.ksh is run
+base=/scratch4/BMC/gmtb/harrold/test_hovmoller
+script=$base/scripts/met_pcp_combine.ksh
+
+# Initialization to process (yyyymmddhh)
+init_time_start="2016060200"
+init_time_end="2016061100"
+# Increment of initializations (currently set to 24 h)
+init_inc="86400"
+
+# List of forecast lead times to process (hh)
+fcst_time_list="24"
+
+# Desired output accumulation time to use in plotting (hh)
+accum_time="06"
+
+# Accumulation bucket for input model output (hh)
+model_bucket="06"
+
+# Accumulation bucket for input CMORPH analyses (hh)
+obs_bucket="01"
+
+# Name of observation type
+obtype="cmorph"
+
+# Directory where hourly CMORPH data is located
+raw_obs="/scratch4/BMC/gmtb/data/vx_data/${obtype}/PROC_01h"
+
+# Directory where model output data is located
+fcst_data="/scratch4/BMC/gmtb/harrold/test_ceres/gf"
+
+# Directory where CMORPH output from pcp-combine is located
+pcp_combine_obs_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/${obtype}/bucket_${accum_time}h"
+
+# Directory where CMORPH output from CDO/NCO commands is located
+pcp_combine_obs_proc="/scratch4/BMC/gmtb/harrold/test_hovmoller/${obtype}/proc"
+
+**** Create a Hovmoller diagram of accumulated precipitation ****
+
+The run_hovmoller.ksh script uses NetCDF files from the run_pcp_combine.ksh to call the plot_hovmoller.ncl script, which creates Hovmoller diagrams. This script is universal; it can plot either the forecast or the observations. Users can edit the run_hovmoller.ncl script to change titles, etc. In addition, the script is set to average precipitation from 5N - 15N, but is easily user-configurable.
+
+The run_hovmoller.ksh script requires that several variables be set:
+
+# Name of script
+script="plot_hovmoller.ncl"
+
+# Input directory where forecast or observation file is located
+in_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/cmorph/proc/cat/"
+
+# Name of input file to be plotted
+in_file="cmorph_APCP06_2016060200-2016061100_valid00Z.nc"
+
+# Output directory where forecast or observation hovmoller plot will be written 
+out_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/output/"
+
+# Name of output file
+out_file="APCP06_cmorph.png"
+
+# Name of precipitation variable in file created in run_pcp_combine.ksh script
+precip_var="APCP_06"
