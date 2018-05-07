@@ -3,8 +3,8 @@
 ;==========================
 begin
 
-diri  = ""+in_dir+""
-f = addfile(diri+""+in_file+"","r")
+;diri  = ""+in_dir+""
+f = addfile(""+in_file+"","r")
 
 apcp = f->$precip_var$(:,:,:)
 time=f->time
