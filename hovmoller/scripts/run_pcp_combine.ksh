@@ -47,10 +47,10 @@ raw_obs="/scratch4/BMC/gmtb/data/vx_data/${obtype}/PROC_01h"
 fcst_data="/scratch4/BMC/gmtb/harrold/test_ceres/gf"
 
 # Directory where CMORPH output from pcp-combine is located
-pcp_combine_obs_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/${obtype}/bucket_${accum_time}h"
+pcp_combine_obs_dir="${base}/${obtype}/bucket_${accum_time}h"
 
 # Directory where CMORPH output from CDO/NCO commands is located
-pcp_combine_obs_proc="/scratch4/BMC/gmtb/harrold/test_hovmoller/${obtype}/proc"
+pcp_combine_obs_proc="${base}/${obtype}/proc"
 
 # Handle converting start and end initializations to UT
 init_start_yyyy=`echo ${init_time_start} | cut -c1-4`  # year (yyyy) of initialization time

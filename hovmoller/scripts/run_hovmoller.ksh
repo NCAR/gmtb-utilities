@@ -8,14 +8,17 @@ script="plot_hovmoller.ncl"
 # Load necessary modules
 module load ncl
 
+# Path to base dir
+base="/scratch4/BMC/gmtb/harrold/test_hovmoller"
+
 # Input directory where forecast or observation file is located
-in_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/cmorph/proc/cat/"
+in_dir="${base}/cmorph/proc/cat/"
 
 # Name of input file to be plotted
 in_file="cmorph_APCP06_2016060200-2016061100_valid00Z.nc"
 
 # Output directory where forecast or observation hovmoller plot will be written 
-out_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/output/"
+out_dir="${base}/output/"
 mkdir -p ${out_dir}
 
 # Name of output file

@@ -29,7 +29,7 @@ The script requires that several variables be set:
 
 # Path to base Hovmoller testing base directory
 # Note, this script assumes a particular directory structure:
-# $base/scripts --> directory where met_pcpi_combine.ksh is run
+# $base/scripts --> directory where met_pcp_combine.ksh is run
 base=/scratch4/BMC/gmtb/harrold/test_hovmoller
 script=$base/scripts/met_pcp_combine.ksh
 
@@ -61,10 +61,10 @@ raw_obs="/scratch4/BMC/gmtb/data/vx_data/${obtype}/PROC_01h"
 fcst_data="/scratch4/BMC/gmtb/harrold/test_ceres/gf"
 
 # Directory where CMORPH output from pcp-combine is located
-pcp_combine_obs_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/${obtype}/bucket_${accum_time}h"
+pcp_combine_obs_dir="${base}/${obtype}/bucket_${accum_time}h"
 
 # Directory where CMORPH output from CDO/NCO commands is located
-pcp_combine_obs_proc="/scratch4/BMC/gmtb/harrold/test_hovmoller/${obtype}/proc"
+pcp_combine_obs_proc="${base}/${obtype}/proc"
 
 **** Create a Hovmoller diagram of accumulated precipitation ****
 
@@ -75,14 +75,17 @@ The run_hovmoller.ksh script requires that several variables be set:
 # Name of script
 script="plot_hovmoller.ncl"
 
+# Path to base dir
+base=/scratch4/BMC/gmtb/harrold/test_hovmoller
+
 # Input directory where forecast or observation file is located
-in_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/cmorph/proc/cat/"
+in_dir="${base}/cmorph/proc/cat/"
 
 # Name of input file to be plotted
 in_file="cmorph_APCP06_2016060200-2016061100_valid00Z.nc"
 
 # Output directory where forecast or observation hovmoller plot will be written 
-out_dir="/scratch4/BMC/gmtb/harrold/test_hovmoller/output/"
+out_dir="${base}/output/"
 
 # Name of output file
 out_file="APCP06_cmorph.png"
