@@ -10,7 +10,7 @@
 base=/scratch4/BMC/gmtb/harrold/test_surfrad
 
 # Path to ascii2nc executable
-ascii2nc=/scratch4/BMC/dtc/MET/met-6.0/bin/ascii2nc
+ascii2nc=/scratch4/BMC/dtc/MET/MET_development/met/bin/ascii2nc
 
 # Path to Ascii2NcConfig file
 # For ASCII2NC iseage and information on the configuration files, please see:
@@ -31,8 +31,11 @@ grib_code=204
 # Time step - time between intervals in seconds
 time_step_sec=21600
 
-# List time widths - time width of summary intervals in minutes
-time_width_list="360"
+# Provide desired time widths - time width of summary intervals in minutes
+# Negative (positive) numbers indicate time prior (after) to time the summary is occurring
+# The example below indicates to use a time window 6 hours prior to the time the summary is occurring
+time_width_beg=-360
+time_width_end=0
 
 # Statistic for time summary
 stat="median"
@@ -96,29 +99,27 @@ for init in ${init_list}; do
     # Reformat SURFRAD file list from vertical to horizontal (to be in proper format for ascii2nc arguements).
     surfrad_file_list=`cat ${surfrad_file_list} | tr '\n' ' '`
 
-    # Loop for each specified time width
-    for time_width in ${time_width_list}; do
+    # Convert time width from minutes to seconds
+    time_width_beg_sec=$(( ${time_width_beg} * 60 ))
+    time_width_end_sec=$(( ${time_width_end} * 60 ))
 
-      # Convert time width from minutes to seconds
-      time_width_sec=$(( (${time_width} * 60) + 5 ))  # Add 5 second buffer to be inclusive
+    # Export envinoment variables to be read into Ascii2NcConfig
+    export time_step_sec
+    export time_width_beg_sec
+    export time_width_end_sec
+    export stat
+    export stat_low
+    export stat_high
+    export grib_code
 
-      # Export envinoment variables to be read into Ascii2NcConfig
-      export time_step_sec
-      export time_width_sec
-      export stat
-      export stat_low
-      export stat_high
-      export grib_code
+    mkdir -p ${base}/surfrad/proc/${stid}
+    nc_file=${base}/surfrad/proc/${stid}/${stid}_${init}_${grib_code}.nc
 
-      mkdir -p ${base}/surfrad/proc/tw_${time_width}min/${stid}
-      nc_file=${base}/surfrad/proc/tw_${time_width}min/${stid}/${stid}_${init}_${grib_code}_tw${time_width}min.nc
+    # Run ascii2nc for each specified initialization, time width, and station
+    echo "${ascii2nc} ${surfrad_file_list} ${nc_file} -format surfrad -config ${ascii2nc_config} -v 3"
 
-      # Run ascii2nc for each specified initialization, time width, and station
-      echo "${ascii2nc} ${surfrad_file_list} -format surfrad -config ${ascii2nc_config} -v 3"
+    ${ascii2nc} ${surfrad_file_list} ${nc_file} -format surfrad -config ${ascii2nc_config} -v 3
 
-      ${ascii2nc} ${surfrad_file_list} ${nc_file} -format surfrad -config ${ascii2nc_config} -v 3
-
-    done # Close time_width loop
   done # Close stid loop
 done # Close initialization loop
 

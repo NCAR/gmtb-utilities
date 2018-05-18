@@ -41,32 +41,14 @@ begin
 ; This data needs to be created using the run_ascii2nc.ksh driver script
 ;************************************************                               
 ; Radiation input file
-;rad_in       = "/scratch4/BMC/gmtb/harrold/test_surfrad/surfrad/proc/tw_360min/dra/dra_2017092500_SW_tw360min.nc"
+;rad_in       = "/scratch4/BMC/gmtb/harrold/test_surfrad/surfrad/proc/dra/dra_2017092500_SW.nc"
 rad_in       = ""+srad_file+""
 
 ; Add the file
 rin          = addfile(rad_in,"r")
  
-; Read SURFRAD data
-srad_data    = rin->obs_arr
-sraddatadims = dimsizes(srad_data)
-obsdim       = sraddatadims(0)
-
-; Get the station name from SURFRAD data file
-station_all_char = rin->hdr_sid
-station_all      = charactertostring(station_all_char)
-station          = station_all(0)
-
-; Get the station lat/lon from SURFRAD data file
-stid_lat_lon = rin->hdr_arr
-stid_lat = stid_lat_lon(0,0)
-stid_lon = stid_lat_lon(0,1)
-;print(stid_lat)
-;print(stid_lon)
-
-; Read grib code and associated values from SURFRAD data file
-srad_grib_code   = srad_data(:,1)
-srad_vals     = srad_data(:,4)
+; Get the grib code from SURFRAD data file
+srad_grib_code = rin->obs_gc(0)
 
 ; Check to make sure the grib code passed in from the driver script 
 ; matches the grib code included in the SURFRAD data. If so, read
@@ -75,45 +57,48 @@ srad_vals     = srad_data(:,4)
 ; 205 = downward longwave
 ; 211 = upward shortwave
 ; 212 = upward longwave
-grib_vals      = srad_vals(ind(srad_grib_code.eq.grib_code))
+
+; Read SURFRAD data from input file
+srad_vals      = rin->obs_val
+
+; Get the station lat/lon from SURFRAD data file
+stid_lat       = rin->hdr_lat(0)
+stid_lon       = rin->hdr_lon(0)
+
+; Get the station name from SURFRAD data file
+station_char = rin->hdr_sid_table(0,:)
+station      = charactertostring(station_char)
 
 ; Statistics output from processing SURFRAD data needs to be changed 
 ; in the Ascii2NCConfig. See run_ascii2nc.ksh for details.
 ; By default the configuration file outputs median, min, and max but 
 ; this be changed to things like mean, 10th percentile, 90th percentile, etc.
 stat_num = 3 
-stat_dim = dimsizes(grib_vals)/stat_num
+stat_dim = dimsizes(srad_vals)/stat_num
 
 ; Create new arrays to store the values for the statistics of interest.
 ; By default, this will be median, min, and max.
-var_stat = new((/stat_dim/),typeof(grib_vals))
-var_lowval    = new((/stat_dim/),typeof(grib_vals))
-var_highval    = new((/stat_dim/),typeof(grib_vals))
+var_stat = new((/stat_dim/),typeof(srad_vals))
+var_lowval    = new((/stat_dim/),typeof(srad_vals))
+var_highval    = new((/stat_dim/),typeof(srad_vals))
 
 ; Read the data into the established arrays.
 do i = 0,stat_dim-1
-  var_stat(i)   = grib_vals(stat_num*i)
-  var_lowval(i) = grib_vals(stat_num*i + 1)
-  var_highval(i)    = grib_vals(stat_num*i + 2)
+  var_stat(i)   = srad_vals(stat_num*i)
+  var_lowval(i) = srad_vals(stat_num*i + 1)
+  var_highval(i)    = srad_vals(stat_num*i + 2)
 end do
 
-; To plot the shaded area between the min and max, create a new array
 ; that contains those values.
-var_mnmx   = new((/2,stat_dim/),typeof(grib_vals))
+var_mnmx   = new((/2,stat_dim/),typeof(srad_vals))
 do i = 0,stat_dim-1
   var_mnmx(0,i) = var_lowval(i)
   var_mnmx(1,i) = var_highval(i)
 end do
 
 ; Read SURFRAD data valid time
-srad_times_all_char = rin->hdr_vld
-srad_times_all      = charactertostring(srad_times_all_char)
-
-; filter srad_times_all down to contain only one time for each hour
-srad_times  = new((/stat_dim/),typeof(srad_times_all))
-do i = 0,stat_dim-1
-  srad_times(i) = srad_times_all(stat_num*i)
-end do
+srad_times_all_char = rin->hdr_vld_table
+srad_times      = charactertostring(srad_times_all_char)
 
 ;************************************************
 ; read in model data

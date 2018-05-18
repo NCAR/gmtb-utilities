@@ -6,17 +6,15 @@ ncl=/apps/ncl/6.3.0-nodap_gcc447/intel.bin/ncl
 
 date_list="20170925"
 init_list="00"
-twindow_list="360"
 site_list="dra"
 grib_code_list="204"
 
 for date in ${date_list};do
   for init in ${init_list}; do
-    for twindow in ${twindow_list}; do
       for site in ${site_list}; do
 	for grib_code in ${grib_code_list}; do
 	    
-  srad_file=${base}/surfrad/proc/tw_${twindow}min/${site}/${site}_${date}${init}_${grib_code}_tw${twindow}min.nc
+  srad_file=${base}/surfrad/proc/${site}/${site}_${date}${init}_${grib_code}.nc
   echo ${srad_file}
 
   ref_file1=${base}/gfs.${date}/first_file/gfs.t${init}z.pgrb2.0p50.f006.grib2
@@ -25,7 +23,7 @@ for date in ${date_list};do
   ref_files_dir=${base}/gfs.${date}/other_fcst_files/
   echo ${ref_files_dir}
 
-  png_file=${base}/plots/model_vs_${site}_tw${twindow}min_srad${grib_code}_${date}i${init}.png
+  png_file=${base}/plots/model_vs_${site}_srad${grib_code}_${date}i${init}.png
   echo ${png_file}
 
   # Example command line:
@@ -37,6 +35,5 @@ for date in ${date_list};do
 
         done # grib_code
       done # site
-    done # twindow
   done # init
 done # date
