@@ -1,0 +1,129 @@
+! NCAR/RAL/JNT: weiweili@ucar.edu
+! read in GRIB2 data (herein FV3GFS) and output binary files
+! by selecting pressure leves, variables and forecast lead times
+! subroutine "grib_api_decode.f" will be called
+! To compile: 
+! ifort **.f90 -I$GRIB_API/include -L$GRIB_API/lib -lgrib_api_f90
+
+include 'grib_api_decode.f' ! subroutine to decode GRIB data
+
+program main
+implicit none
+
+integer, parameter:: y1=beg_y, y2=end_y, m1=beg_m, m2=end_m, h1=00, h2=00
+!integer, parameter:: dall=dmax ! number of days examined
+
+integer, parameter:: nlon=num_x, nlat=num_y
+
+integer, parameter:: nz=num_selz
+integer, dimension(nz):: alev
+data alev/sellevs/
+
+integer, parameter:: nfcst=num_fcst
+integer, dimension(nfcst):: fcst
+data fcst/selfcst/
+
+real, dimension(nlon,nlat,nz):: var
+
+character*200 inpath, filename, filein, fileout
+character*200 year*4, mon*2, day*2, hour*2, lead*3
+character*20, parameter:: shortnm="vname"
+integer ifcst, iy, im, id, ih, d1, d2, dd
+integer i, j, iz, it
+
+
+FC: DO ifcst=1,nfcst
+
+    write(lead,'(i3)')fcst(ifcst)
+    if(fcst(ifcst)==0)then
+        lead='000'
+    else if(fcst(ifcst)<100)then
+        lead(1:1)='0'
+    endif
+    print*,lead
+
+
+! set output files
+fileout='homedir/vname_f'//lead//'.gdat'
+open(66,file=fileout,access='direct',recl=nlon*nlat*nz,&
+        status='unknown',convert='little_endian')
+dd = 0
+
+YR: DO iy=y1,y2
+
+    write(year,'(i4)')iy
+
+    ! uncomment if using all days in a calendar year
+    !if( ((mod(iy,4).eq.0.and.mod(iy,100).ne.0).or.mod(iy,400).eq.0)) then
+    !    dall=366
+    !else
+    !    dall=365
+    !endif
+
+
+        MN:     DO im=m1,m2
+            write(mon,'(i2)')im
+            if(im<10) mon(1:1)='0'
+
+            if (im==2) then
+            if(((mod(iy,4).eq.0.and.mod(iy,100).ne.0).or.mod(iy,400).eq.0)) then
+                d2=29
+            else
+                d2=28
+            endif
+            endif
+
+            if (im==4 .or. im==6 .or. im==9 .or. im==11) then
+                d2=30
+            else if (im==1 .or. im==3 .or. im==5 .or. im==7 .or.&
+                     im==8 .or.im==10 .or. im==12) then
+                d2=31
+            endif
+
+                d1=1
+
+            DY:        DO id=d1,d2
+                write(day,'(i2)')id
+                if(id<10) day(1:1)='0'
+
+                !HH:           DO ih=h1,h2,6
+                !    write(hour,'(i2)')ih
+                !    if(ih<10) hour(1:1)='0'
+
+
+                !if(fcst(ifcst)==0)then
+                !    inpath='/glade/p/ral/jntp/GMTB/data/fv3retro/'
+                !    call system ('tar -xzf '//trim(inpath)//year//mon//day//&
+                !                '00_gfs.tar.gz -C ./')
+                !else
+                !    inpath='/glade/p/ral/jntp/GMTB/data/fv3retro/addtl_hours/'
+                !    call system ('tar -xzf '//trim(inpath)//year//mon//day//&
+                !             '00_gfs.tar.gz -C ./'//year//mon//day//'00/gfs.'&
+                !            //year//mon//day//'/00/ --strip-components 3')
+                !endif
+
+                filename='../../../fv3retro/'//year//mon//day//'00/gfs.'&
+                        //year//mon//day//'/00/gfs.t00z.pgrb2.1p00.f'//lead
+                filein=trim(filename)
+                !print*,trim(filename)
+
+                ! grib_dump filenmae for detailed info 
+                call grib_api_decode(filein,shortnm,nlon,nlat,nz,alev,&
+                        fcst(ifcst)-6,var)
+
+
+                dd=dd+1
+
+                ! output 
+                write(66,rec=dd) var
+                print*,maxval(var),minval(var)
+
+!                ENDDO HH
+            ENDDO DY
+        ENDDO MN
+
+ENDDO YR
+
+ENDDO FC
+
+END
