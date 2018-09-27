@@ -22,7 +22,7 @@
 # Contact: Weiwei Li (weiweili@ucar.edu)
 
 # !!!!!! What should be modified !!!!!!
- setenv HHH /glade/u/home/weiweili/my_work/GMTB/diag/APCPvsPW/4git
+ setenv HHH $yourdir
 
  foreach VVV ( tp ) # grib_dump to check the shortname of a variable 
 
