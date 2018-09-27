@@ -1,0 +1,45 @@
+Authors: Weiwei Li - NCAR/RAL (weiweili@ucar.edu). Some of the code and scripts were also supported by the projects led by Zhuo Wang (zhuowang@illinois.edu)
+
+Purpose: plot the average daily precipitation rate (mm/day), examine the model skill of precipitation (particularly ITCZ) forecasts; and diagnose the relationship between precipitation and column water vapor (CWV). The strong control of CWV on precipitation has been examined in some previous studies (Zeng 1999; Bretherton et al. 2004; Neelin et al. 2009; Alaka and Maloney 2012).
+
+Notes: The scripts currently assumed using model output in GRIB1/2 format and were tested using FV3GFSv1 forecasts
+
+*********************************
+General Steps and Inputs/Outputs:
+
+1. analyze model skill of precipitation forecast and ITCZ
+
+a) edit itcz.sh as needed
+# !!!!!! What should be modified !!!!!!
+# HHH  : home directory
+# MMM  : model name
+# VVV  : shortname of selected variable (use grib_dump to check)
+# XXX  : number of grid in longitude
+# YYY  : number of grid in latitude
+# XX0  : first longitude in degree
+# YY0  : first latitude in degree
+# DDX  : x-direction resolution in degree
+# DDY  : y-direction resolution in degree
+# SZZ  : number of selected vertical levels for output
+# LSZZ : list of selected vertical levels (use grib_dump to check) 
+# TTT  : number of total time (in day)
+# FFF  : number of selected forecast lead times 
+# LFF  : list of selected forecast lead times
+# BYY  : first year 
+# EYY  : last year 
+# BMM  : first month
+# EMM  : last month
+
+b) make the script executable:
+chmod 754 itcz.sh
+
+c) run the script:
+./itcz.sh
+
+2. Diagnose the relationship between precipitation and column water vapor (CWV)
+
+
+
+
+
+
