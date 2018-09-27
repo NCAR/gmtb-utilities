@@ -1,16 +1,17 @@
 ! stratify precipitation (%) with 1-mm-wide bins of the column water vapor (CWV; mm or kg/ m^2)
-! ECMWF GRIB_API is required
+! ECMWF GRIB_API is required decode GRIB data
 ! ifort **.f90 -I$GRIB_API/include -L$GRIB_API/lib -lgrib_api_f90
-! contact: Weiwei Li (weiweili@ucar.edu) and Zhuo Wang (zhuowang@illinois.edu)
+! contact: Weiwei Li (weiweili@ucar.edu). The code is also contributed by Zhuo Wang (zhuowang@illinois.edu)
 
 include 'grib_api_decode.f' ! subroutine to decode GRIB data
+include 'ngrd.f' ! subroutine to convert lat/lon (degree) to grib point
 
 program main
-implicit none
 
 integer, parameter:: y1=beg_y, y2=end_y, m1=beg_m, m2=end_m, h1=00, h2=00
 integer, parameter:: nlon=num_x, nlat=num_y
-integer, parameter:: tmax=dmax, nbs=1
+integer, parameter:: nbs=num_bs
+real, parameter:: lon0=xx0, lat0=yy0, igrd=grdd
 real, dimension(nbs):: sb,nb,wb,eb
 !tropical belt around the globe (in degree)
 data sb/YY1/
@@ -28,28 +29,34 @@ integer, dimension(nfcst):: fcst
 data fcst/selfcst/
 
 character*200 year*4, mon*2, day*2, hour*2, lead*3
-character*10, parameter:: shortnm0='vnamep',shortnm1='vnamepw',shortnm2='vnamelmsk'
+character*10, parameter:: shortnm0='vnamep',shortnm1='vnamecwv',shortnm2='vnamelmsk'
 ! stratify bins for CWV
 integer, parameter:: nbin=nbb
 real, parameter:: pwmax=cwv1,pwmin=cwv0,step=(pwmax-pwmin)/real(nbin-1)
 
 ! stratify bins for Precip
-integer, parameter:: nbinp=nbbp
+integer, parameter:: nbinp=npp
 real, parameter:: pmax=precip1,pmin=precip0,pstep=(pmax-pmin)/real(nbinp-1)
 
 real,parameter:: dmiss=-9.99e+08
 real, dimension(nlon,nlat):: ldmask,pw
 real, dimension(nlon,nlat,nz):: var
-real, dimension(nbin):: var_sum, var_str, nn_sum, nn_sum_p
-real, dimension(nbinp):: nn_sum_str
+real, dimension(nbin):: var_sum, var_str, nn_sum, nn_sum_p, nn_sum_str
+real, dimension(nbinp):: nn_sum_strp
 
-character*200:: filein,filename,fileout1,fileout2
+character*200:: filein,filename,fileout1,fileout2,fileout3
 integer i, j, k, cc, cc_p, ifcst, iy, im, id, ih, d1, d2, dd, ibs
 
 
 BS: DO ibs=1, nbs ! loop basins
 
-
+        ! convert lat/lon to grid
+        lon1=ngrd(wb(ibs),lon0,igrd)
+        lon2=ngrd(eb(ibs),lon0,igrd)
+        lat1=ngrd(sb(ibs),lat0,igrd)
+        lat2=ngrd(nb(ibs),lat0,igrd)
+        nlat2=lat2-lat1+1
+        !print*,lon1,lon2,lat1,lat2,nlat2
 
 FC: DO ifcst=1,nfcst
 
@@ -67,14 +74,19 @@ FC: DO ifcst=1,nfcst
     !print*,lead
 
     ! set output files
-    fileout1='homedir/vnamep.vs.vnamepw_PDF.f'//lead//'.gdat'
-    open(88,file=fileout1,form='unformatted', access='direct', &
-            recl=nbin,status='unknown',convert='little_endian')
+    if(lead.ne.'000')then
+        fileout1='homedir/vnamep.vs.vnamecwv_PDF.f'//lead//'.gdat'
+        open(88,file=fileout1,form='unformatted', access='direct', &
+               recl=nbin,status='unknown',convert='little_endian')
 
+        fileout2='homedir/vnamep.PDF.f'//lead//'.gdat'
+        open(99,file=fileout2,form='unformatted',access='direct',&
+                recl=nbinp,status='unknown',convert='little_endian')
+    endif
 
-    fileout2='homedir/vnamep.PDF.f'//lead//'.gdat'
-    open(99,file=fileout2,form='unformatted',access='direct',&
-            recl=nbinp,status='unknown',convert='little_endian')
+    fileout3='homedir/vnamecwv.PDF.f'//lead//'.gdat'
+        open(77,file=fileout3,form='unformatted',access='direct',&
+                recl=nbin,status='unknown',convert='little_endian')
 
 
 YR: DO iy=y1,y2
@@ -133,8 +145,10 @@ YR: DO iy=y1,y2
                 ! shortnames are tp, pwat and lsm for 
                 ! Total precip, precipitable water and land mask, respectively
                 ! grib_dump filenmae for detailed info 
-                call grib_api_decode(filein,shortnm0,nlon,nlat,nz,alev,&
-                    fcst(ifcst)-6,var)
+                if(lead.ne.'000')then
+                    call grib_api_decode(filein,shortnm0,nlon,nlat,nz,alev,&
+                        fcst(ifcst)-6,var)
+                endif
                 call grib_api_decode(filein,shortnm1,nlon,nlat,nz,alev,&
                     fcst(ifcst),pw)
 
@@ -150,18 +164,28 @@ YR: DO iy=y1,y2
                 !print*,maxval(ldmask),minval(ldmask)
 
 
-                    do j=lat1(ibs),lat2(ibs)
-                    do i=lon1(ibs),lon2(ibs)
+                    do j=lat1,lat2
+                    do i=lon1,lon2
                         ! total precip vs CWV (0:land, 1:sea)
-                        if ( ldmask(i,j).le.1 &
-                        .and. var(i,j,1) .ne. dmiss &
-                        .and. pw(i,j) .ge. pwmin )then
+                        if ( lead.ne.'000' .and. ldmask(i,j).le.1 &
+                        .and. var(i,j,1).ne.dmiss &
+                        .and. pw(i,j).ge.pwmin )then
                             cc=int((pw(i,j)-pwmin)/step)+1
                             if(cc>nbin)then
                                     !print*,pw(i,j)
                                     cc=nbin
                             endif
                             var_sum(cc)=var_sum(cc)+var(i,j,1)
+                        endif
+
+                        ! PDF of CWV
+                        if ( ldmask(i,j).le.1 &
+                        .and. pw(i,j) .ge. pwmin )then
+                            cc=int((pw(i,j)-pwmin)/step)+1
+                            if(cc>nbin)then
+                                    !print*,pw(i,j)
+                                    cc=nbin
+                            endif
                             nn_sum(cc)=nn_sum(cc)+1
                         endif
 
@@ -190,21 +214,32 @@ YR: DO iy=y1,y2
 ENDDO YR
 
 !print*,dd
-!print*,tmax
 
 !-------PDF normalization-----
-do cc=1,nbin
-    var_str(cc)=var_sum(cc)/nn_sum(cc)
-enddo
-print*,maxval(var_str),minval(var_str)
+if(lead.ne.'000')then
+    do cc=1,nbin
+        var_str(cc)=var_sum(cc)/nn_sum(cc)
+    enddo
+    print*,maxval(var_str),minval(var_str)
 
-do cc=1,nbinp
-    nn_sum_str(cc)=nn_sum_p(cc)/sum(nn_sum_p)
+    do cc=1,nbinp
+        nn_sum_strp(cc)=nn_sum_p(cc)/sum(nn_sum_p)
+    enddo
+endif
+
+! PDF of CWV
+do cc=1,nbin
+    nn_sum_str(cc)=nn_sum(cc)/sum(nn_sum)
 enddo
 
 ! output
-write(88,rec=1) var_str
-write(99,rec=1) nn_sum_str
+write(77,rec=1) nn_sum_str
+if(ifcst>1)then
+    write(88,rec=1) var_str
+    write(99,rec=1) nn_sum_strp
+endif
+
+print*,'done',lead
 
 
 ENDDO FC

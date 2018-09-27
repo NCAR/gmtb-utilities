@@ -1,0 +1,255 @@
+* GrADS script to plot 2D precipitation
+* contact: Weiwei Li (weiweili@ucar.edu)
+'reinit'
+'set display white'
+'c'
+
+step=1
+pwmin=cwv0
+pwmax=cwv1
+
+inpath='homedir'
+* plot 1
+'open 'inpath'/vnamep.vs.vnamecwv_PDF.f024.ctl'
+'open 'inpath'/vnamep.vs.vnamecwv_PDF.f072.ctl'
+'open 'inpath'/vnamep.vs.vnamecwv_PDF.f120.ctl'
+'open 'inpath'/vnamep.vs.vnamecwv_PDF.f168.ctl'
+'open 'inpath'/vnamep.vs.vnamecwv_PDF.f216.ctl'
+
+* plot 2
+'open 'inpath'/vnamecwv.PDF.f000.ctl'
+'open 'inpath'/vnamecwv.PDF.f024.ctl'
+'open 'inpath'/vnamecwv.PDF.f072.ctl'
+'open 'inpath'/vnamecwv.PDF.f120.ctl'
+'open 'inpath'/vnamecwv.PDF.f168.ctl'
+'open 'inpath'/vnamecwv.PDF.f216.ctl'
+
+* plot 3
+'open 'inpath'/vnamep.PDF.f024.ctl'
+'open 'inpath'/vnamep.PDF.f072.ctl'
+'open 'inpath'/vnamep.PDF.f120.ctl'
+'open 'inpath'/vnamep.PDF.f168.ctl'
+'open 'inpath'/vnamep.PDF.f216.ctl'
+
+
+ch.1='(a) Precip [mm day`a-1`n] vs. CWV [mm]'
+ch.2='(b) CWV Distribution [%]'
+ch.3='(c) Normalized Precip PDF diff [%]'
+
+'set vpage 0 8.5 0 11'
+'set grads off';'set grid off'
+'set font 1'
+'set xlopts 1 4 0.14'
+'set ylopts 1 4 0.14'
+
+i=1;while(i<=1)
+y1=8.1;y2=10.6;dy=3.5
+
+j=1;while(j<=3)
+
+x1=1.0;x2=8.0;dx=2.7
+
+***** plot 1
+if(j=1)
+
+tmp1=1
+tmp2=5
+ii=tmp1;while(ii<=tmp2)
+'set dfile 'ii
+'set parea 'x1' 'x2' 'y1' 'y2
+'set gxout contour'
+'set csmooth on'
+'set cmark 0'
+'set vrange 0 40'
+'set ylint 10'
+t0=(10-pwmin)/step+1
+t1=(65-pwmin)/step+1
+'set t 't0' 't1
+'set xlabs 10|15|20|25|30|35|40|45|50|55|60|65'
+'set cthick 6'
+tmp3=ii+1
+say tmp3
+'set ccolor 'tmp3
+'d p'
+ii=ii+1;endwhile
+
+endif
+
+***** plot 2
+if(j=2)
+
+tmp1=6
+tmp2=11
+ii=tmp1;while(ii<=tmp2)
+'set dfile 'ii
+'set parea 'x1' 'x2' 'y1' 'y2
+'set gxout contour'
+'set cmark 0'
+'set vrange 0.2 3'
+'set ylint 1'
+t0=(10-pwmin)/step+1
+t1=(65-pwmin)/step+1
+'set t 't0' 't1
+'set xlabs 10|15|20|25|30|35|40|45|50|55|60|65'
+'set cthick 6'
+tmp3=ii-tmp1+1
+say tmp3
+'set cthick 5'
+if(tmp3=1)
+'set cthick 12'
+endif
+'set ccolor 'tmp3
+'d p*100.'
+ii=ii+1;endwhile
+
+endif
+
+***** plot 3
+if(j=3)
+'set parea 'x1' 'x2' 'y1' 'y2
+'set xlabs 0|30|60|90|120|150|180|210'
+'set vrange -35 35'
+'set ylint 20'
+'set cthick 7'
+'set ccolor 1'
+'set t 1 8'
+'set cmark 0'
+'set cstyle 5'
+'set cthick 4'
+
+'set gxout bar'
+'set bargap 45'
+'set barbase 0'
+'set xlabs 0|30|60|90|120|150|180|210'
+'set t 1 8'
+'set vrange -35 35'
+'set ylint 20'
+'set ccolor 2'
+'set cmark 0'
+'d (p.14-p.12)/p.12*100'
+
+'set bargap 75'
+'set ccolor 3'
+'set cmark 0'
+'d (p.16-p.12)/p.12*100'
+
+** outline
+'set gxout bar'
+'set bargap 45'
+'set barbase 0'
+'set baropts outline'
+'set xlabs 0|30|60|90|120|150|180|210'
+'set t 1 8'
+'set vrange -35 35'
+'set ylint 20'
+'set ccolor 1'
+'set cmark 0'
+'d (p.14-p.12)/p.12*100'
+
+'set baropts outline'
+'set bargap 75'
+'set ccolor 1'
+'set cmark 0'
+'d (p.16-p.12)/p.12*100'
+
+
+endif
+
+
+'set string 1 bl 3 0'
+'set strsiz 0.12'
+'draw string 'x1' 'y2+0.1' 'ch.j
+
+if (j<=2)
+'set string 1 bc 3 0'
+'set strsiz 0.12'
+'draw string 4.45 'y1-0.5' CWV [mm]'
+endif
+
+if(j=1)
+'set strsiz 0.12'
+'set string 1 bc 3 90'
+'draw string 0.44 'y1+1.2' Precip [mm day`a-1`n]'
+endif
+
+
+if(j>1)
+'set strsiz 0.12'
+'set string 1 bc 3 90'
+'draw string 0.44 'y1+1.2' Percentage [%]'
+endif
+
+if (j=3)
+'set string 1 bc 3 0'
+'set strsiz 0.12'
+'draw string 4.45 'y1-0.5' Precip [mm day`a-1`n]'
+endif
+
+if(j=1)
+'set string 1 br 3 0'
+'set strsiz 0.12'
+'draw string 8 'y2+0.1' (20S-20N, JJA 2017)'
+endif
+
+j = j + 1
+y1=y1-dy;y2=y2-dy
+endwhile
+
+
+
+i = i+1;endwhile
+
+
+
+x1=0.8;x2=4.8;dx=4.2
+'set string 1 bl 3'
+'set strsiz 0.12'
+
+
+
+* plot1
+i=1;while(i<=5)
+y1=8.8;y2=10.4;dy=0.2;dyy=3.5
+'set line 'i+1' 1 7'
+'draw line 'x1+0.4' 'y2-dy*(i-1)' 'x1+1.0' 'y2-dy*(i-1)
+'draw string 'x1+1.2' 'y2-dy*(i-1)-0.06' modelnm Day'i''
+i=i+1;endwhile
+
+* plot2
+
+i=1;while(i<=6)
+y1=5.2;y2=6.9;dy=0.2;dyy=3.5
+'set line 'i' 1 7'
+'draw line 'x1+0.4' 'y2-dy*(i-1)' 'x1+1.0' 'y2-dy*(i-1)
+if(i=1)
+'draw string 'x1+1.2' 'y2-dy*(i-1)-0.06' modelnm Day0'
+endif
+if(i>1)
+'draw string 'x1+1.2' 'y2-dy*(i-1)-0.06' modelnm Day'i-1''
+endif
+i=i+1;endwhile
+
+
+* plot3
+x1=3.5;x2=8.2;dx=4.2
+i=1;while(i<=1)
+y1=8.5;y2=3.4;dy=0.2
+'set line 2 1 7'
+'draw recf 'x1+0.4+(i-1)*dx' 'y2-0.06' 'x1+1.0+(i-1)*dx' 'y2+0.04
+'set line 1 1 5'
+'draw rec 'x1+0.4+(i-1)*dx' 'y2-0.06' 'x1+1.0+(i-1)*dx' 'y2+0.04
+*'draw line 'x1+0.4+(i-1)*dx' 'y2' 'x1+1.0+(i-1)*dx' 'y2
+'draw string 'x1+1.2+(i-1)*dx' 'y2-0.06' (Day5-Day1)/Day1*100'
+
+'set line 3 1 7'
+'draw recf 'x1+0.4+(i-1)*dx' 'y2-dy-0.06' 'x1+1.0+(i-1)*dx' 'y2-dy+0.04
+'set line 1 1 5'
+'draw rec 'x1+0.4+(i-1)*dx' 'y2-dy-0.06' 'x1+1.0+(i-1)*dx' 'y2-dy+0.04
+'draw string 'x1+1.2+(i-1)*dx' 'y2-dy-0.06' (Day9-Day1)/Day1*100'
+i=i+1;endwhile
+
+
+'gxprint vnamep_vs_vnamecwv_NORMprecip.modelnm.pdf'
+*pull pause
+*'reinit'
+

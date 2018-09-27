@@ -9,7 +9,7 @@ General Steps and Inputs/Outputs:
 
 1. analyze model skill of precipitation forecast and ITCZ
 
-a) edit itcz.sh as needed
+a) edit ITCZ.sh as needed
 # !!!!!! What should be modified !!!!!!
 # HHH  : home directory
 # MMM  : model name
@@ -31,15 +31,50 @@ a) edit itcz.sh as needed
 # EMM  : last month
 
 b) make the script executable:
-chmod 754 itcz.sh
+chmod 754 ITCZ.sh
 
 c) run the script:
-./itcz.sh
+./ITCZ.sh
 
 2. Diagnose the relationship between precipitation and column water vapor (CWV)
 
+a) edit PvsCWV.sh as needed
+# !!!!!! What should be modified !!!!!!
+# MMM  : model name
+# HHH  : home directory
+# XXX  : number of grid in longitude
+# YYY  : number of grid in latitude
+# SZZ  : number of selected vertical levels for output
+# LSZZ : list of selected vertical levels (use grib_dump to check) 
+# TTT  : number of total time (in day)
+# NBB  : number of basins or regions examined
+# LATb : southern bound of latitude of studied domain
+# LATe : northern bound of latitude of studied domain
+# LONb : western bound of latitude of studied domain
+# LONe : eastern bound of latitude of studied domain
+# LAT0 : southernmost latitude
+# LON0 : westernmost longitude
+# GRD  : resolution
+# FFF  : number of selected forecast lead times 
+# LFF  : list of selected forecast lead times
+# BYY  : first year 
+# EYY  : last year 
+# BMM  : first month
+# EMM  : last month
+# VPR  : shortname of precipitation in GRIB file
+# VPW  : shortname of CWV in GRIB file
+# VLS  : shortname of landmask in GRIB file
+# NBIN : number of bins to stratify CWV
+# CWV0 : minimum value of CWV
+# CWV1 : maximum value of CWV
+# NBINP: number of bins to stratify precip
+# PR0  : minimum value of precip
+# PR1  : maximum value of precip 
 
 
+b) make the script executable:
+chmod 754 PvsCWV.sh
 
-
+c) run the script:
+./PvsCWV.sh
 
