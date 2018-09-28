@@ -93,7 +93,7 @@ YR: DO iy=y1,y2
     if (shortnm0 .eq. 'Q1')then
         ! open Q1 file (normal binary)
         inpath_q1='homedir/Q1Q2/output/'
-        filein_q1='vnameinput_'//year//'_f'//lead//'.gdat'
+        filein_q1=trim(vnameinput)//'_'//year//'_f'//lead//'.gdat'
         !print*,filein_q1
         open(66,file=trim(inpath_q1)//trim(filein_q1),access='direct',&
                 recl=nlon*nlat*nz1,form='unformatted',status='old',&
@@ -144,7 +144,7 @@ YR: DO iy=y1,y2
                 ! shortnames are pwat and lsm for 
                 ! precipitable water and land mask, respectively
                 ! grib_dump filenmae for detailed info 
-                if(shortnm0.ne.'Q1')then
+                if(shortnm.ne.'Q1')then
                     call grib_api_decode(filein,shortnm0,nlon,nlat,nz1,alev1,&
                             fcst(ifcst),var)
                 endif
@@ -156,7 +156,7 @@ YR: DO iy=y1,y2
                             fcst(ifcst),ldmask)
                 endif
 
-                if(shortnm0.eq.'Q1')then
+                if(shortnm.eq.'Q1')then
                     ! read in Q1
                     read (66,rec=d1+dd) var
                 endif

@@ -18,6 +18,7 @@ a) edit RHQ1vsCWV.sh as needed
 # !!!!!! What should be modified !!!!!!
 # MMM  : model name
 # HHH  : home directory
+# VAR  : variables to analyze, e.g. RH and Q1
 # XXX  : number of grid in longitude
 # YYY  : number of grid in latitude
 # SZZ1 : number of selected vertical levels for RH or Q1

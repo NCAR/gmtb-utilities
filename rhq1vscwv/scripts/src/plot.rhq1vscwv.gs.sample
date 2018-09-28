@@ -1,22 +1,23 @@
-* GrADS script to plot relationship between vnamerh or Q1 with column water vapor
+* GrADS script to plot relationship between vnameinput or Q1 with column water vapor
 * contact: Weiwei Li (weiweili@ucar.edu)
 'reinit'
 'set display white'
 'c'
 'run homedir/src/blue_red.gs'
 
+variable='vnameinput'
 
 step=1
 pwmin=cwv0
 pwmax=cwv1
 
 inpath='homedir'
-'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f000.ctl'
-'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f024.ctl'
-'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f072.ctl'
-'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f120.ctl'
-'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f168.ctl'
-'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f216.ctl'
+'open 'inpath'/vnameinput.vs.vnamecwv_PDF.f000.ctl'
+'open 'inpath'/vnameinput.vs.vnamecwv_PDF.f024.ctl'
+'open 'inpath'/vnameinput.vs.vnamecwv_PDF.f072.ctl'
+'open 'inpath'/vnameinput.vs.vnamecwv_PDF.f120.ctl'
+'open 'inpath'/vnameinput.vs.vnamecwv_PDF.f168.ctl'
+'open 'inpath'/vnameinput.vs.vnamecwv_PDF.f216.ctl'
 
 ch.1='(a) modelnm Day0'
 ch.2='(b) Day1-Day0'
@@ -25,7 +26,13 @@ ch.4='(d) Day5-Day0'
 ch.5='(e) Day7-Day0'
 ch.6='(f) Day9-Day0'
 
+if(variable='vnamerh')
 ttl='RH [%] vs. CWV [mm] (20S-20N; JJA 2017)'
+endif
+
+if(variable='vnameq1')
+ttl='Q1 [K day`a-1`n] vs. CWV [mm] (20S-20N; JJA 2017)'
+endif
 
 y1=7.9;y2=10.3;dy=3.2;dy2=3.6
 k=1;j=1;while(j<=3)
@@ -53,15 +60,27 @@ t1=(65-pwmin)/step+1
 if(k=1)
 'set clab off'
 'set dfile 'i
+if(variable='vnamerh')
 'set clevs 15 25 35 45 55 65 75 85'
 'set ccols 41 42 43 44 45 46 47 48 49'
+endif
+if(variable='vnameq1')
+'set clevs -2.5 -2 -1.5 -1 -0.5 0 0.5 1.5 2.5 3.5 4.5'
+'set ccols 34 35 36 37 38 39 41 42 43 44 45 46'
+endif
 'd p'
 endif
 
 if(k>1)
 'set clab on'
+if(variable='vnamerh')
 'set clevs -2.5 -2 -1.5 -1 -0.5 0 0.5 1.5 2.5 3.5 4.5'
 'set ccols 34 35 36 37 38 39 41 42 43 44 45 46'
+endif
+if(variable='vnameq1')
+'set clevs -0.9 -0.7 -0.5 -0.3 -0.1 0 0.1 0.3 0.5 0.7 0.9'
+'set ccols 34 35 36 37 38 39 41 42 43 44 45 46'
+endif
 'd p.'k'-p.1'
 endif
 
@@ -72,7 +91,7 @@ endif
 'draw string 'x1' 'y2+0.1' 'ch.k
 'set string 1 bc 3'
 'set strsiz 0.11'
-'draw string 'x1+1.85' 'y1-0.4' vnamecwv'
+'draw string 'x1+1.85' 'y1-0.4' CWV'
 
 if(k=1)
 'run homedir/src/cbar-g3.gs 1 3 0 2.25 'y1-0.7' 1 4 0.8'
@@ -104,4 +123,4 @@ y1=y1-dy;y2=y2-dy
 endif
 endwhile
 
-'gxprint vnamerh.vs.vnamecwv.modelnm.pdf'
+'gxprint vnameinput.vs.vnamecwv.modelnm.pdf'
