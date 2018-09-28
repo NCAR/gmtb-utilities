@@ -1,0 +1,284 @@
+! Calculate Q1 (heat source, K/day) and Q2 (moisture sink, K/day) 
+! Divergence&Omega (optional) based on Yanai et al. 1973
+! Input: Mixing ratio or SHum (kg/kg) (or derived form RH (%)), Air Temp (K),U, and V
+! ECMWF GRIB_API is required decode GRIB data
+! ifort **.f90 -I$GRIB_API/include -L$GRIB_API/lib -lgrib_api_f90
+! contact: Weiwei Li (weiweili@ucar.edu). 
+
+include 'grib_api_decode.f' ! subroutine to decode GRIB data
+include 'rhum2shum.f' ! subroutine to convert Rel humidity to Specific humidity
+! uncomment if using subroutine to calculate div and p-velocity
+!include 'div_omega.f' !subroutine to calculate divergence and vertical velocity
+include 'q1q2_cal_fcst.f'  !subroutine to calculate Q1 and Q1
+
+program main
+implicit none
+
+integer, parameter:: y1=beg_y, y2=end_y, m1=beg_m, m2=end_m, h1=00, h2=00
+integer, parameter:: dall=num_t ! JJA of a year
+integer, parameter:: delt=ddd !unit: second per day
+!integer, parameter:: ilat1=1, ilat2=181 !latitude selected 90S-90N
+character*200 inpath, filename, filein, fileout1, fileout2, fileout3
+character*200 filename2, filename3, filein2, filein3
+integer, parameter:: nlon=num_x, nlat=num_y
+real, parameter:: dlat=grdd_y,dlon=grdd_x !--grid interval 
+real, parameter:: lon0=xx0, lat0=yy0
+
+integer, parameter:: nz=num_selz
+integer, dimension(nz):: alev
+data alev/sellevs/
+
+integer, parameter:: nfcst=num_fcst
+integer, dimension(nfcst):: fcst
+data fcst/selfcst/
+
+real, dimension(nlon,nlat,nz):: tmp_u, tmp_v, tmp_q, tmp_t, tmp_r, tmp_w
+real, dimension(nlon,nlat,nz):: tmp_r2, tmp_t2, tmp_r3, tmp_t3, tmp_q2, tmp_q3
+real, dimension(:,:,:,:), allocatable:: uwnd, vwnd, shum, temp
+real, dimension(:,:,:,:), allocatable:: shum2, temp2, shum3, temp3
+real, dimension(:,:,:,:), allocatable:: div, omega
+real, dimension(:,:,:,:), allocatable:: q1, q2
+character*200 year*4, mon*2, day*2, hour*2, lead*3, lead2*3, lead3*3
+real::alon(nlon),alat(nlat)
+integer ifcst, iy, im, id, ih, d1, d2, dd
+integer i, j, iz, it, iflag
+
+! uncomment if latitude is not in regular grid
+! get central differetial dlat --------------
+!do j=2,nlat-1
+!dlat(j)=(alat(j+1)-alat(j-1))/2.0
+!enddo
+!dlat(1)=dlat(2)
+!dlat(nlat)=dlat(nlat-1)
+!print*,dlat
+
+!------get latitude and longitude-----
+do i=1,nlon
+    alon(i)=lon0+dlon*(i-1)
+enddo
+
+do j=1,nlat
+    alat(j)=lat0+dlat*(j-1)
+enddo
+
+
+FC: DO ifcst=1,nfcst
+
+    write(lead,'(i3)')fcst(ifcst)
+    if(fcst(ifcst)==0)then
+        lead='000'
+    else if(fcst(ifcst)<100)then
+        lead(1:1)='0'
+    endif
+    print*,lead
+
+    if(fcst(ifcst)>0)then
+        write(lead2,'(i3)')fcst(ifcst)+24
+        if(fcst(ifcst)+24==0)then
+            lead2='000'
+        else if(fcst(ifcst)+24<100)then
+            lead2(1:1)='0'
+        endif
+
+        write(lead3,'(i3)')fcst(ifcst)-24
+        if(fcst(ifcst)-24==0)then
+            lead3='000'
+        else if(fcst(ifcst)-24<100)then
+            lead3(1:1)='0'
+        endif
+
+        !print*,lead2
+        !print*,lead3
+    endif
+
+
+YR: DO iy=y1,y2
+    dd=0
+    write(year,'(i4)')iy
+
+    ! uncomment if using all days in a calendar year
+    !if( ((mod(iy,4).eq.0.and.mod(iy,100).ne.0).or.mod(iy,400).eq.0)) then
+    !    dall=366
+    !else
+    !    dall=365
+    !endif
+    allocate(uwnd(nlon,nlat,nz,dall),vwnd(nlon,nlat,nz,dall))
+    allocate(shum(nlon,nlat,nz,dall),temp(nlon,nlat,nz,dall))
+    allocate(div(nlon,nlat,nz,dall),omega(nlon,nlat,nz,dall))
+    allocate(q1(nlon,nlat,nz,dall),q2(nlon,nlat,nz,dall))
+    !for time derivative in fcst
+    allocate(shum2(nlon,nlat,nz,dall),temp2(nlon,nlat,nz,dall))
+    allocate(shum3(nlon,nlat,nz,dall),temp3(nlon,nlat,nz,dall))
+
+    ! set output files
+    fileout1='./output/Q1_'//year//'_f'//lead//'.gdat'
+    open(66,file=fileout1,access='direct',recl=nlon*nlat*nz*dall,&
+            status='unknown')
+    fileout2='./output/Q2_'//year//'_f'//lead//'.gdat'
+    open(88,file=fileout2,access='direct',recl=nlon*nlat*nz*dall,&
+            status='unknown')
+
+        MN:     DO im=m1,m2
+            write(mon,'(i2)')im
+            if(im<10) mon(1:1)='0'
+
+            if (im==2) then
+            if(((mod(iy,4).eq.0.and.mod(iy,100).ne.0).or.mod(iy,400).eq.0)) then
+                d2=29
+            else
+                d2=28
+            endif
+            endif
+
+            if (im==4 .or. im==6 .or. im==9 .or. im==11) then
+                d2=30
+            else if (im==1 .or. im==3 .or. im==5 .or. im==7 .or.&
+                     im==8 .or.im==10 .or. im==12) then
+                d2=31
+            endif
+
+            d1=1
+
+            DY:        DO id=d1,d2
+                write(day,'(i2)')id
+                if(id<10) day(1:1)='0'
+
+                HH:           DO ih=h1,h2,6
+                    write(hour,'(i2)')ih
+                    if(ih<10) hour(1:1)='0'
+
+
+                !if(fcst(ifcst)==0)then
+                !    inpath='/glade/p/ral/jntp/GMTB/data/fv3retro/'
+                !    call system ('tar -xzf '//trim(inpath)//year//mon//day//&
+                !                '00_gfs.tar.gz -C ./')
+                !else
+                !    inpath='/glade/p/ral/jntp/GMTB/data/fv3retro/addtl_hours/'
+                !    call system ('tar -xzf '//trim(inpath)//year//mon//day//&
+                !             '00_gfs.tar.gz -C ./'//year//mon//day//'00/gfs.'&
+                !            //year//mon//day//'/00/ --strip-components 3')
+                !endif
+
+                filename='../../../fv3retro/'//year//mon//day//'00/gfs.'&
+                        //year//mon//day//'/00/gfs.t00z.pgrb2.1p00.f'//lead
+                filein=trim(filename)
+
+                !for time derivative in fcst
+                if(fcst(ifcst)>0)then
+                    filename2='../../../fv3retro/'//year//mon//day//'00/gfs.'&
+                            //year//mon//day//'/00/gfs.t00z.pgrb2.1p00.f'//lead2
+                    filename3='../../../fv3retro/'//year//mon//day//'00/gfs.'&
+                            //year//mon//day//'/00/gfs.t00z.pgrb2.1p00.f'//lead3
+                    filein2=trim(filename2)
+                    filein3=trim(filename3)
+                    !print*, trim(filename2),trim(filename3)
+                endif
+
+                !print*,trim(filename)
+
+                ! shortnames are u, v, r, t, w for 
+                ! U-wind, V-wind, rel Humidity, Temp, and Omega, respectively
+                ! grib_dump filenmae for detailed info 
+                call grib_api_decode(filein,'u',nlon,nlat,nz,alev,fcst(ifcst),tmp_u)
+                call grib_api_decode(filein,'v',nlon,nlat,nz,alev,fcst(ifcst),tmp_v)
+                call grib_api_decode(filein,'r',nlon,nlat,nz,alev,fcst(ifcst),tmp_r)
+                call grib_api_decode(filein,'t',nlon,nlat,nz,alev,fcst(ifcst),tmp_t)
+                call grib_api_decode(filein,'w',nlon,nlat,nz,alev,fcst(ifcst),tmp_w)
+                !for time derivative in fcst
+                if(fcst(ifcst)>0)then
+                    call grib_api_decode(filein2,'r',nlon,nlat,nz,alev,fcst(ifcst),tmp_r2)
+                    call grib_api_decode(filein2,'t',nlon,nlat,nz,alev,fcst(ifcst),tmp_t2)
+                    call grib_api_decode(filein3,'r',nlon,nlat,nz,alev,fcst(ifcst),tmp_r3)
+                    call grib_api_decode(filein3,'t',nlon,nlat,nz,alev,fcst(ifcst),tmp_t3)
+                endif
+
+                ! convert RH (%) to Specific humidity (kg/kg)
+                do iz=1,nz
+                    call rhum2shum(tmp_q(:,:,iz),real(alev(iz)),&
+                        tmp_t(:,:,iz)-273.15,tmp_r(:,:,iz),nlon,nlat)
+
+                    !for time derivative in fcst
+                    if(fcst(ifcst)>0)then
+                        call rhum2shum(tmp_q2(:,:,iz),real(alev(iz)),&
+                            tmp_t2(:,:,iz)-273.15,tmp_r2(:,:,iz),nlon,nlat)
+                        call rhum2shum(tmp_q3(:,:,iz),real(alev(iz)),&
+                            tmp_t3(:,:,iz)-273.15,tmp_r3(:,:,iz),nlon,nlat)
+                    endif
+
+                enddo
+
+                dd=dd+1
+
+                uwnd(:,:,:,dd)=tmp_u
+                vwnd(:,:,:,dd)=tmp_v
+                shum(:,:,:,dd)=tmp_q
+                temp(:,:,:,dd)=tmp_t
+                omega(:,:,:,dd)=tmp_w/1e2 ! unit: hPa/s
+                !for time derivative in fcst
+                if(fcst(ifcst)>0)then
+                    shum2(:,:,:,dd)=tmp_q2
+                    temp2(:,:,:,dd)=tmp_t2
+                    shum3(:,:,:,dd)=tmp_q3
+                    temp3(:,:,:,dd)=tmp_t3
+                endif
+
+                !print*,maxval(tmp_u),minval(tmp_u)
+                !print*,maxval(tmp_v),minval(tmp_v)
+                !print*,maxval(tmp_q),minval(tmp_q)
+                !print*,maxval(tmp_t),minval(tmp_t)
+                !print*,maxval(tmp_w),minval(tmp_w)
+                !!for time derivative in fcst
+                !if(fcst(ifcst)>0)then
+                !    print*,maxval(tmp_q2),minval(tmp_q2)
+                !    print*,maxval(tmp_t2),minval(tmp_t2)
+                !    print*,maxval(tmp_q3),minval(tmp_q3)
+                !    print*,maxval(tmp_t3),minval(tmp_t3)
+                !endif
+
+                ENDDO HH
+            ENDDO DY
+        ENDDO MN
+
+    ! uncomment if using subroutine to calculate divergence and p-velocity
+    !call div_omega(nlon,nlat,nz,dall,alon,alat,dlon,dlat,alev,&
+                    !uwnd,vwnd,div,omega)
+    !write(99,rec=1) omega
+    if (fcst(ifcst) == 0) then
+        iflag=0
+    else if (fcst(ifcst) > 0)then
+        iflag=1
+    endif
+    call q1q2_fcst(nlon,nlat,nz,dall,alon,alat,dlon,dlat,delt,alev,&
+                  temp,temp2,temp3,shum,shum2,shum3,uwnd,vwnd,omega,q1,q2,iflag)
+
+    ! deal with large values due to large derivatives
+    do it=1, dall 
+        do iz=1, nz
+            do j=1, nlat
+                do i=1, nlon
+                    if (abs(q1(i,j,iz,it)) .ge. 50) then
+                        q1(i,j,iz,it)=0.
+                    endif
+
+                    if (abs(q2(i,j,iz,it)) .ge. 50) then
+                        q2(i,j,iz,it)=0.
+                    endif
+                enddo
+            enddo
+        enddo
+    enddo
+
+
+    !print*,maxval(q1),minval(q1)
+
+    ! output 
+    write(66,rec=1) q1
+    write(88,rec=1) q2
+
+    deallocate(uwnd,vwnd,shum,temp,shum2,temp2,shum3,temp3,div,omega,q1,q2)
+
+ENDDO YR
+
+ENDDO FC
+
+END
