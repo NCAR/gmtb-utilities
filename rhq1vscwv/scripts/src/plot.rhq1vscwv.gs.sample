@@ -1,0 +1,107 @@
+* GrADS script to plot relationship between vnamerh or Q1 with column water vapor
+* contact: Weiwei Li (weiweili@ucar.edu)
+'reinit'
+'set display white'
+'c'
+'run homedir/src/blue_red.gs'
+
+
+step=1
+pwmin=cwv0
+pwmax=cwv1
+
+inpath='homedir'
+'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f000.ctl'
+'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f024.ctl'
+'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f072.ctl'
+'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f120.ctl'
+'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f168.ctl'
+'open 'inpath'/vnamerh.vs.vnamecwv_PDF.f216.ctl'
+
+ch.1='(a) modelnm Day0'
+ch.2='(b) Day1-Day0'
+ch.3='(c) Day3-Day0'
+ch.4='(d) Day5-Day0'
+ch.5='(e) Day7-Day0'
+ch.6='(f) Day9-Day0'
+
+ttl='RH [%] vs. CWV [mm] (20S-20N; JJA 2017)'
+
+y1=7.9;y2=10.3;dy=3.2;dy2=3.6
+k=1;j=1;while(j<=3)
+x1=0.5;x2=4;dx=4.
+i=1;while(i<=2)
+'set vpage 0 8.5 0 11'
+'set parea 'x1' 'x2' 'y1' 'y2
+'set grads off';'set grid off'
+'set font 1'
+'set xlopts 1 4 0.12'
+'set ylopts 1 4 0.12'
+'set gxout shaded'
+'set csmooth on'
+'set ylint 100'
+if(i=1)
+'set ylab on'
+endif
+if(i=2)
+'set ylab off'
+endif
+t0=(20-pwmin)/step+1
+t1=(65-pwmin)/step+1
+'set t 't0' 't1''
+'set xlabs 20|25|30|35|40|45|50|55|60|65'
+if(k=1)
+'set clab off'
+'set dfile 'i
+'set clevs 15 25 35 45 55 65 75 85'
+'set ccols 41 42 43 44 45 46 47 48 49'
+'d p'
+endif
+
+if(k>1)
+'set clab on'
+'set clevs -2.5 -2 -1.5 -1 -0.5 0 0.5 1.5 2.5 3.5 4.5'
+'set ccols 34 35 36 37 38 39 41 42 43 44 45 46'
+'d p.'k'-p.1'
+endif
+
+
+
+'set string 1 bl 3'
+'set strsiz 0.13'
+'draw string 'x1' 'y2+0.1' 'ch.k
+'set string 1 bc 3'
+'set strsiz 0.11'
+'draw string 'x1+1.85' 'y1-0.4' vnamecwv'
+
+if(k=1)
+'run homedir/src/cbar-g3.gs 1 3 0 2.25 'y1-0.7' 1 4 0.8'
+'set string 1 bl 3'
+'draw string 7.8 'y1-0.66' '
+endif
+if(k=2)
+'run homedir/src/cbar-g3.gs 1 3 0 6.25 'y1-0.7' 1 4 0.8'
+'set string 1 bl 3'
+'draw string 7.8 'y1-0.66' '
+endif
+if(k=6)
+'run homedir/src/cbar-g3.gs 2 3 0 4.25 'y1-0.7' 1 4 0.8'
+'set string 1 bl 3'
+'draw string 'x1+4.6' 'y1-0.66' '
+
+'set string 1 bc 3'
+'set strsiz 0.15'
+'draw string 4.25 10.7 'ttl
+endif
+
+k=k+1;i=i+1;x1=x1+dx;x2=x2+dx
+endwhile
+j=j+1
+if(j=2)
+y1=y1-dy2;y2=y2-dy2
+else
+y1=y1-dy;y2=y2-dy
+endif
+endwhile
+
+'gxprint vnamerh.vs.vnamecwv.modelnm.pdf'

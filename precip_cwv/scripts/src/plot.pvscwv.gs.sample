@@ -1,4 +1,4 @@
-* GrADS script to plot 2D precipitation
+* GrADS script to plot relationship between precip and column water vapor
 * contact: Weiwei Li (weiweili@ucar.edu)
 'reinit'
 'set display white'

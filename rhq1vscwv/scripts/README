@@ -1,0 +1,55 @@
+Authors: Weiwei Li - NCAR/RAL (weiweili@ucar.edu). Some of the code and scripts were also supported by the projects led by Zhuo Wang (zhuowang@illinois.edu)
+
+Purpose: plot the relationships between relative humidity (RH; unit: percentage) and diabatic heating rate Q1 (also called heat source; unit; K/day; Yanai et al. 1973 and Yanai and Tomita 1998) with the column water vapor (CWV; unit: mm). The relationship between humidity and convection is also a central issue of many cumulus schemes. 
+
+Notes: The scripts currently assumed using model output in GRIB1/2 format and were tested using FV3GFSv1 forecasts
+
+The source code of calculating Q1 and Q2 (moisture sink) was introduced in another directory.
+
+*********************************
+General Steps and Inputs/Outputs:
+
+1. calculate Q1 and Q2
+
+
+2. diagnose the relationships between RH or Q1 with CWV
+
+a) edit RHQ1vsCWV.sh as needed
+# !!!!!! What should be modified !!!!!!
+# MMM  : model name
+# HHH  : home directory
+# XXX  : number of grid in longitude
+# YYY  : number of grid in latitude
+# SZZ1 : number of selected vertical levels for RH or Q1
+# LSZZ1: list of selected vertical levels for RH or Q1 (use grib_dump to check) 
+# SZZ2 : number of selected vertical levels for CWV
+# LSZZ2: list of selected vertical levels for CWV (grib_dump to check) 
+# TTT  : number of total time (in day)
+# NBB  : number of basins or regions examined
+# LATb : southern bound of latitude of studied domain
+# LATe : northern bound of latitude of studied domain
+# LONb : western bound of latitude of studied domain
+# LONe : eastern bound of latitude of studied domain
+# LAT0 : southernmost latitude
+# LON0 : westernmost longitude
+# GRD  : resolution
+# FFF  : number of selected forecast lead times 
+# LFF  : list of selected forecast lead times
+# BYY  : first year 
+# EYY  : last year 
+# BMM  : first month
+# EMM  : last month
+# VRH  : shortname of precipitation in GRIB file
+# VPW  : shortname of CWV in GRIB file
+# VLS  : shortname of landmask in GRIB file
+# NBIN : number of bins to stratify CWV
+# CWV0 : minimum value of CWV
+# CWV1 : maximum value of CWV
+# Contact: Weiwei Li (weiweili@ucar.edu)
+
+b) make the script executable:
+chmod 754 RHQ1vsCWV.sh
+
+c) run the script:
+./RHQ1vsCWV.sh
+
