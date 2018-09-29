@@ -51,7 +51,7 @@
  setenv LSZZ '0'
  setenv FFF 9 # determined by the number of LFF
  setenv LFF '000,024,048,072,096,120,144,168,216'
- setenv VPBL 'hpbl' # shortname of precip
+ setenv VPBL 'hpbl' # shortname of PBL height
  setenv VLS 'lsm' # shortname of land mask
  setenv NBIN 16
  setenv PBL0 0
@@ -85,10 +85,6 @@
  sed "s/nbb/$NBIN/g"                   tmp1 > tmp2
  sed "s/ph0/$PBL0/g"                   tmp2 > tmp1
  sed "s/ph1/$PBL1/g"                   tmp1 > hpbl.pdf.f90
-
-
-
-
 
  # if array is large, add -mcmodel=medium or =large
  #ifort hpbl.pdf.f90 -I$GRIB_API/include -L$GRIB_API/lib -lgrib_api_f90 
