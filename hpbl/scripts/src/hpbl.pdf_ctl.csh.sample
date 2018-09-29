@@ -1,0 +1,17 @@
+#!/bin/csh -f
+foreach fcst (000 024 048 072 096 120 144 168 192 216)
+cat>vnameph.PDF.f${fcst}.ctl<<EOF
+DSET ^vnameph.PDF.f${fcst}.gdat
+title FV3GFS PDF of vnameph 
+undef 9.999e+20
+options little_endian
+xdef     1 linear    0.000  1.000
+ydef     1 linear    0.000  1.000
+zdef 1 levels 1000
+* number of bins
+tdef   nbb linear   01JUN2017   1dy
+vars 1
+p  1 99 PDF of vnameph [m]
+endvars
+EOF
+end
