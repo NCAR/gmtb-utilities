@@ -1,8 +1,6 @@
 'reinit'
-
 'set display white'
 'c'
-
 
 step=100
 phmin=ph0
@@ -96,10 +94,6 @@ if(i>1)
 'draw string 'x1+1.2' 'y2-dy*(i-1)-0.06' modelnm Day'i-1''
 endif
 i=i+1;endwhile
-
-
-
-
 
 'gxprint vnameph.PDF.modelnm.pdf'
 *pull pause
