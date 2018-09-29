@@ -34,7 +34,7 @@
 # Contact: Weiwei Li (weiweili@ucar.edu)
 
 # !!!!!! What should be modified !!!!!!
- setenv HHH /glade/u/home/weiweili/my_work/GMTB/diag/rhq1vscwv
+ setenv HHH $yourdir
 
  setenv MMM 'FV3GFS'
  setenv XXX 360
