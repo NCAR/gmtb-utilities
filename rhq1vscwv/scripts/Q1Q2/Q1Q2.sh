@@ -22,7 +22,6 @@
 
 # !!!!!! What should be modified !!!!!!
  setenv HHH $yourdir
-
  setenv XXX 360
  setenv YYY 181
  setenv BYY 2017
@@ -39,7 +38,6 @@
  setenv LFF '000,024,048,072,096,120,144,168,216'
  setenv TTT 92
  setenv DDD 86400
-
 
  cd $HHH
  mkdir output
@@ -67,7 +65,6 @@
  sed "s/num_fcst/$FFF/g"                        tmp1 > tmp2
  sed "s/selfcst/$LFF/g"                         tmp2 > cal_q1q2_fv3gfs.f90 
 
-
  # if array is large, add -mcmodel=medium or =large
  ifort cal_q1q2_fv3gfs.f90 -I$GRIB_API/include -L$GRIB_API/lib -lgrib_api_f90 
  ./a.out
@@ -76,4 +73,3 @@
  rm -f a.out
  rm -f tmp1
  rm -f tmp2
-
