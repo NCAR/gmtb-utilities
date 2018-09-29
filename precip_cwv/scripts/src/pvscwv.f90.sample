@@ -1,5 +1,5 @@
 ! stratify precipitation (%) with 1-mm-wide bins of the column water vapor (CWV; mm or kg/ m^2)
-! ECMWF GRIB_API is required decode GRIB data
+! ECMWF GRIB_API is required to decode GRIB data
 ! ifort **.f90 -I$GRIB_API/include -L$GRIB_API/lib -lgrib_api_f90
 ! contact: Weiwei Li (weiweili@ucar.edu). The code is also contributed by Zhuo Wang (zhuowang@illinois.edu)
 
