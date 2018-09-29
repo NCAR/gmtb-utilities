@@ -1,7 +1,7 @@
 ! Calculate Q1 (heat source, K/day) and Q2 (moisture sink, K/day) 
-! Divergence&Omega (optional) based on Yanai et al. 1973
+! Divergence&Omega (optional) based on Yanai et al. (1973)
 ! Input: Mixing ratio or SHum (kg/kg) (or derived form RH (%)), Air Temp (K),U, and V
-! ECMWF GRIB_API is required decode GRIB data
+! ECMWF GRIB_API is required to decode GRIB data
 ! ifort **.f90 -I$GRIB_API/include -L$GRIB_API/lib -lgrib_api_f90
 ! contact: Weiwei Li (weiweili@ucar.edu). 
 
