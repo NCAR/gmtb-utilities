@@ -29,7 +29,7 @@ a) edit HPBL.sh as needed
 # EYY  : last year 
 # BMM  : first month
 # EMM  : last month
-# VPBL  : shortname of PBL height in GRIB file
+# VPBL : shortname of PBL height in GRIB file
 # VLS  : shortname of landmask in GRIB file
 # NBIN : number of bins to stratify PBL
 # PBL0 : minimum value of PBL
