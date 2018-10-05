@@ -1,7 +1,7 @@
 Authors: Weiwei Li - NCAR/RAL (weiweili@ucar.edu). Some of the code and scripts were also supported by the projects led by Zhuo Wang (zhuowang@illinois.edu)
 
 Purpose: 
-1) calculate heat source (Q1; K/day) and moisture sink (Q2; K/day) based on Yanai et al. (1973) and Yanai and Tomita (1998). Note that the vertical velocity used in the caculation was from model output.
+1) calculate heat source (Q1; K/day) and moisture sink (Q2; K/day) based on Yanai et al. (1973) and Yanai and Tomita (1998). Note that the vertical velocity used in the calculation was from model output.
 2) plot the relationships between relative humidity (RH; unit: percentage) and diabatic heating rate Q1 with the column water vapor (CWV; unit: mm). The relationship between humidity and convection is a central issue of many cumulus schemes. 
 
 Notes: The scripts currently assumed using model output in GRIB1/2 format and were tested using FV3GFSv1 forecasts
