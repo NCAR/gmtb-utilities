@@ -1,0 +1,45 @@
+<load_spec>
+  <connection>
+    <host>mohawk.rap.ucar.edu:3306</host>
+    <database>mv_GMTB_Phys_grid2obs_VSDB</database>
+    <user>mvuser</user>
+    <password>mvuser</password>
+  </connection>
+
+  <met_version>V8.0</met_version>
+  
+  <verbose>false</verbose>
+  <insert_size>1</insert_size>
+  <stat_header_db_check>true</stat_header_db_check>
+  <mode_header_db_check>false</mode_header_db_check>
+  <drop_indexes>false</drop_indexes>
+  <apply_indexes>true</apply_indexes>
+  <load_stat>true</load_stat>
+  <load_mode>false</load_mode>
+  <load_mpr>false</load_mpr>
+  <group>GMTB</group>  
+
+  <folder_tmpl>/d2/projects/GMTB/Phys_Test_FV3GFSv2/VSDB/grid2obs/{init}/{suite}</folder_tmpl>
+  
+  <load_val>
+    <field name="suite">
+      <val>suite1</val>
+      <val>suite2</val>
+      <val>suite3</val>
+      <val>suite4</val>            
+    </field>
+    <field name="init">
+      <val>00Z</val>
+      <val>12Z</val>
+    </field>		        
+  </load_val>
+  
+  <line_type>
+    <val>SL1L2</val>
+    <val>VL1L2</val>        
+</line_type>
+  
+  <load_xml>true</load_xml>
+  <load_note>Loading EMC grid2obs VSDB output from the Phys_Test_FV3GFSv2 runs</load_note>
+  
+</load_spec>

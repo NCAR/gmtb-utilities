@@ -1,0 +1,55 @@
+<load_spec>
+  <connection>
+    <host>mohawk.rap.ucar.edu:3306</host>
+    <database>mv_GMTB_Phys_Test</database>
+    <user>mvuser</user>
+    <password>mvuser</password>
+  </connection>
+
+    <date_list name="folder_dates">
+    <start>2016010100</start>
+    <end>2017123100</end>
+    <inc>864000</inc>
+    <format>yyyyMMddHH</format>
+  </date_list>
+
+  <met_version>V8.0</met_version>
+  
+  <verbose>false</verbose>
+  <insert_size>1</insert_size>
+  <stat_header_db_check>false</stat_header_db_check>
+  <mode_header_db_check>false</mode_header_db_check>
+  <drop_indexes>false</drop_indexes>
+  <apply_indexes>true</apply_indexes>
+  <load_stat>true</load_stat>
+  <load_mode>false</load_mode>
+  <load_mpr>false</load_mpr>
+  <group>GMTB</group>  
+
+    <folder_tmpl>/d2/projects/GMTB/Phys_Test_FV3GFSv2/METVX/{fcst_init}/{suite}/{fcst_init}00/grid_stat</folder_tmpl>
+  
+  <load_val>
+    <field name="fcst_init">
+      <date_list name="folder_dates">
+      </date_list>
+    </field>
+    <field name="suite">
+      <val>suite1</val>
+      <val>suite2</val>
+      <val>suite3</val>
+      <val>suite4</val>            
+    </field>		    
+  </load_val>
+  
+  <line_type>
+    <val>FHO</val>
+    <val>CTC</val>
+    <val>CTS</val>
+    <val>CNT</val>
+    <val>NBRCNT</val>
+</line_type>
+  
+  <load_xml>true</load_xml>
+  <load_note>Loading test MET output from the Phys_Test_FV3GFSv2 runs for 6h qpf vx over CONUS/subregions using CCPA and 24h qpf vx over NH/SH/TROP using CMORPH</load_note>
+  
+</load_spec>

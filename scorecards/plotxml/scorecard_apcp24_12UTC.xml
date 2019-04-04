@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <plot_spec>
+    <connection>
+      <host>mohawk.rap.ucar.edu:3306</host>
+      <database>mv_GMTB_Phys_Test</database>
+      <user>mvuser</user>
+      <password>mvuser</password>
+      <management_system>mariadb</management_system>
+    </connection>
+    
+    <rscript>/usr/local/R/bin/Rscript</rscript>
+    <folders>
+      <r_tmpl>/opt/vxwww/tomcat/webapps/metviewer/R_tmpl</r_tmpl>
+      <r_work>/opt/vxwww/tomcat/webapps/metviewer/R_work</r_work>
+      <plots>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/plots/scorecard/</plots>
+      <data>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/data/scorecard/</data>
+      <scripts>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/scripts/scorecard/</scripts>
+    </folders>
+
+    <plot>
+      <view_value>false</view_value>
+      <view_symbol>true</view_symbol>
+      <view_legend>true</view_legend>
+      <printSQL>true</printSQL>
+      <stat_flag>NCAR</stat_flag>
+      <stat>DIFF_SIG</stat>
+      <threshold_file>threshold_config.xml</threshold_file>      
+
+      <template>scorecard.R_tmpl</template>
+
+      <plot_fix>
+        <field name="model">
+          <val name="GFS_suite2_0p25_FCST" />
+          <val name="GFS_suite1_0p25_FCST" />
+
+        </field>
+        <field name="fcst_init_beg">
+          <val name="2016-01-06 12:00:00" />
+          <val name="2017-12-26 12:00:00" />
+        </field>
+
+	<field name="init_hour">
+          <val name="12" />
+        </field>
+      </plot_fix>
+
+      <rows>
+        <field name="stat">
+          <val name="GSS" />
+          <field name="fcst_var">
+	    <val name="APCP_24" label="24-h Accum Pcp"/>
+            <field name="fcst_thresh">
+              <val name="&gt;=0.254 "/>
+              <val name="&gt;=0.508 "/>
+              <val name="&gt;=1.270 "/>
+              <val name="&gt;=2.540 "/>
+              <val name="&gt;=3.810 "/>
+              <val name="&gt;=6.350 "/>
+              <val name="&gt;=8.890 "/>
+              <val name="&gt;=12.700" />
+              <val name="&gt;=25.400" />
+            </field>
+          </field>
+	</field>
+      </rows>
+
+      <columns>
+        <field name="vx_mask">
+          <val name="NH" />
+          <field name="fcst_lead">
+            <val name="480000" label="f48" />
+            <val name="720000" label="f72" />
+            <val name="960000" label="f96" />
+            <val name="1200000" label="f120" />
+            <val name="1440000" label="f144" />
+            <val name="1680000" label="f168" />
+            <val name="1920000" label="f192" />
+            <val name="2160000" label="f216" />
+            <val name="2400000" label="f240" />	    
+          </field>
+        </field>
+	
+        <field name="vx_mask">
+          <val name="SH" />
+          <field name="fcst_lead">
+            <val name="480000" label="f48" />
+            <val name="720000" label="f72" />
+            <val name="960000" label="f96" />
+            <val name="1200000" label="f120" />
+            <val name="1440000" label="f144" />
+            <val name="1680000" label="f168" />
+            <val name="1920000" label="f192" />
+            <val name="2160000" label="f216" />
+            <val name="2400000" label="f240" />	    
+          </field>
+        </field>
+
+	<field name="vx_mask">
+          <val name="TROP" />
+          <field name="fcst_lead">
+            <val name="480000" label="f48" />
+            <val name="720000" label="f72" />
+            <val name="960000" label="f96" />
+            <val name="1200000" label="f120" />
+            <val name="1440000" label="f144" />
+            <val name="1680000" label="f168" />
+            <val name="1920000" label="f192" />
+            <val name="2160000" label="f216" />
+            <val name="2400000" label="f240" />	    
+          </field>
+        </field>
+      </columns>
+
+      <agg_stat>true</agg_stat>
+      <boot_repl>1000</boot_repl>
+      <boot_random_seed>1</boot_random_seed>
+
+      <tmpl>
+        <data_file>scorecard_FCST_APCP24_12UTC_s2s1.data</data_file>
+        <plot_file>scorecard_FCST_APCP24_12UTC_s2s1.png</plot_file>
+        <title>MET output (20160106-20171226 12 UTC inits)</title>
+      </tmpl>
+
+    </plot>
+  </plot_spec>
+
