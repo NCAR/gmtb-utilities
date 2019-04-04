@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE workflow [
+
+<!ENTITY USER "${USER}">
+
+<!ENTITY SCHED "moabtorque">
+<!ENTITY ACCOUNT "hfv3gfs">
+<!ENTITY SERIAL "batch">
+<!ENTITY NODES_EXTRA "<native>-l partition=xjet</native>">
+<!ENTITY SERVICE_QUEUE "service">
+<!ENTITY SERVICE_EXTRA "<native>-l partition=service</native>">
+<!ENTITY RESERVATION '<queue>&SERIAL;</queue><account>&ACCOUNT;</account>'> 
+<!ENTITY METPLUS_RESOURCES "<walltime>01:00:00</walltime>">
+
+<!ENTITY PROJ_DIR "/mnt/lfs3/projects/hfv3gfs/GMTB">
+<!ENTITY OUTPUT_BASE "&PROJ_DIR;/METVX">
+<!ENTITY LOG_DIR "&OUTPUT_BASE;/log">
+<!ENTITY SCRIPTS "&PROJ_DIR;/met_workflow/scripts">
+<!ENTITY METPLUS_CONFIG_DIR "&PROJ_DIR;/met_workflow/config/metplus">
+
+<!ENTITY OBS_GRID_STAT_INPUT_DIR "&PROJ_DIR;/vx_data">
+
+<!ENTITY FCST_INIT_INTERVAL "6">
+<!ENTITY FCST_MAX_FORECAST "240">
+
+<!ENTITY RES "0p25">
+
+]>
+
+<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="50" taskthrottle="100">
+
+  <log>
+    <cyclestr>&LOG_DIR;/workflow_vx_@Y@m@d@H.log</cyclestr>
+  </log>
+
+  <cycledef group="group0">201601010000 201712310000 10:00:00:00</cycledef>
+
+  <metatask>
+    <var name="suite">suite1 suite2 suite3 suite4</var>
+
+    <task name="run_metplus_#suite#_qpf_06h_ccpa" cycledefs="group0" maxtries="2">
+
+      <command>&SCRIPTS;/run_metplus.ksh</command>
+      <jobname><cyclestr>mp_#suite#_@Y@m@d@H00_06h</cyclestr></jobname>
+      <join><cyclestr>&LOG_DIR;/#suite#/run_metplus_qpf_06h_ccpa_@Y@m@d@H00.log</cyclestr></join>
+      <cores>1</cores>
+      &RESERVATION;
+      &NODES_EXTRA;
+      &METPLUS_RESOURCES;
+      
+      <envar>
+	<name>INIT_BEG</name>
+	<value><cyclestr>@Y@m@d@H</cyclestr></value>
+      </envar>
+      <envar>
+	<name>FCST_INIT_INTERVAL</name>
+	<value>&FCST_INIT_INTERVAL;</value>
+      </envar>
+      <envar>
+	<name>FCST_MAX_FORECAST</name>
+	<value>&FCST_MAX_FORECAST;</value>
+      </envar>
+      <envar>
+	<name>LEAD_SEQ</name>
+	<value>0,6,12,18,24,30,36,42,48,54,60,66,72,78,84,90,96,102,108,114,120,126,132,138,144,150,156,162,168,174,180,186,192,198,204,210,216,222,228,234,240</value>
+      </envar>
+      <envar>
+	<name>FCST_VAR1_NAME</name>
+        <value>APCP</value>
+      </envar>
+      <envar>
+	<name>FCST_VAR1_LEVELS</name>
+        <value>A06</value>
+      </envar>
+      <envar>
+	<name>RES</name>
+        <value>&RES;</value>
+      </envar>
+      <envar>
+	<name>SUITE</name>
+        <value>#suite#</value>
+      </envar>
+      <envar>
+	<name>GRID_VX</name>
+        <value>G218</value>
+      </envar>
+      <envar>
+        <name>PROJ_DIR</name>
+        <value>&PROJ_DIR;</value>
+      </envar>
+      <envar>
+        <name>OUTPUT_BASE</name>
+        <value>&OUTPUT_BASE;</value>
+      </envar>
+      <envar>
+        <name>TMP_DIR</name>
+        <value>&OUTPUT_BASE;/tmp/</value>
+      </envar>
+      <envar>
+        <name>METPLUS_CONFIG_DIR</name>
+        <value>&METPLUS_CONFIG_DIR;</value>
+      </envar>
+      <envar>
+	<name>FCST_GRID_STAT_INPUT_DIR</name>
+	<value>&PROJ_DIR;/Phys_Test_FV3GFSv2/POST/#suite#</value>
+      </envar>
+      <envar>
+	<name>OBS_GRID_STAT_INPUT_DIR</name>
+	<value>&OBS_GRID_STAT_INPUT_DIR;/ccpa</value>
+      </envar>
+
+    </task>
+
+    <task name="run_metplus_#suite#_qpf_24h_cmorph" cycledefs="group0" maxtries="2">
+
+      <command>&SCRIPTS;/run_metplus_global.ksh</command>
+      <jobname><cyclestr>mp_#suite#_@Y@m@d@H00_24h</cyclestr></jobname>
+      <join><cyclestr>&LOG_DIR;/#suite#/run_metplus_qpf_24h_cmorph_@Y@m@d@H00.log</cyclestr></join>
+      <cores>1</cores>
+      &RESERVATION;
+      &NODES_EXTRA;
+      &METPLUS_RESOURCES;
+      
+      <envar>
+	<name>INIT_BEG</name>
+	<value><cyclestr>@Y@m@d@H</cyclestr></value>
+      </envar>
+      <envar>
+	<name>FCST_INIT_INTERVAL</name>
+	<value>&FCST_INIT_INTERVAL;</value>
+      </envar>
+      <envar>
+	<name>FCST_MAX_FORECAST</name>
+	<value>&FCST_MAX_FORECAST;</value>
+      </envar>
+      <envar>
+	<name>LEAD_SEQ</name>
+	<value>36,60,84,108,132,156,180,204,228</value>
+      </envar>
+      <envar>
+	<name>FCST_VAR1_NAME</name>
+        <value>APCP</value>
+      </envar>
+      <envar>
+	<name>FCST_VAR1_LEVELS</name>
+        <value>A24</value>
+      </envar>
+      <envar>
+	<name>OBS_VAR1_NAME</name>
+        <value>cmorph_precip5</value>
+      </envar>
+      <envar>
+	<name>OBS_VAR1_LEVELS</name>
+        <value>"(*,*)"</value>
+      </envar>
+      <envar>
+	<name>RES</name>
+        <value>&RES;</value>
+      </envar>
+      <envar>
+	<name>SUITE</name>
+        <value>#suite#</value>
+      </envar>
+      <envar>
+	<name>GRID_VX</name>
+        <value>FCST</value>
+      </envar>
+      <envar>
+        <name>PROJ_DIR</name>
+        <value>&PROJ_DIR;</value>
+      </envar>
+      <envar>
+        <name>OUTPUT_BASE</name>
+        <value>&OUTPUT_BASE;</value>
+      </envar>
+      <envar>
+        <name>TMP_DIR</name>
+        <value>&OUTPUT_BASE;/tmp/</value>
+      </envar>
+      <envar>
+        <name>METPLUS_CONFIG_DIR</name>
+        <value>&METPLUS_CONFIG_DIR;</value>
+      </envar>
+      <envar>
+	<name>FCST_GRID_STAT_INPUT_DIR</name>
+	<value>&PROJ_DIR;/Phys_Test_FV3GFSv2/POST/#suite#</value>
+      </envar>
+      <envar>
+	<name>OBS_GRID_STAT_INPUT_DIR</name>
+	<value>&OBS_GRID_STAT_INPUT_DIR;/cmorph/cmorph_v0.x/0.25deg_24h</value>
+      </envar>
+      <envar>
+	<name>FCST_PCP_COMBINE_OUTPUT_DIR</name>
+	<value>&OUTPUT_BASE;/<cyclestr>@Y@m@d@H</cyclestr>/#suite#/<cyclestr>@Y@m@d@H</cyclestr>00/grid_stat/pcp_combine</value>
+      </envar>
+
+      <dependency>
+        <and>
+	  <taskdep task="run_metplus_#suite#_qpf_06h_ccpa"/>
+	</and>
+      </dependency>
+    </task>
+  </metatask>
+</workflow>
+ 

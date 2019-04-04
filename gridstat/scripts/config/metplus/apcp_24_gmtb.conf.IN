@@ -1,0 +1,81 @@
+[dir]
+PROJ_DIR = _PROJ_DIR_
+METPLUS_PATH = _METPLUS_PATH_
+OUTPUT_BASE = _OUTPUT_BASE_
+MET_INSTALL_DIR = _MET_INSTALL_DIR_
+TMP_DIR = _TMP_DIR_
+
+# input and output data directories
+FCST_PCP_COMBINE_INPUT_DIR = _FCST_GRID_STAT_INPUT_DIR_
+FCST_PCP_COMBINE_OUTPUT_DIR = _FCST_PCP_COMBINE_OUTPUT_DIR_
+
+FCST_GRID_STAT_INPUT_DIR = _FCST_PCP_COMBINE_OUTPUT_DIR_
+OBS_GRID_STAT_INPUT_DIR = _OBS_GRID_STAT_INPUT_DIR_
+GRID_STAT_OUT_DIR = {OUTPUT_BASE}
+
+# Change if you want this to reside somewhere else
+PARM_BASE = /mnt/lfs3/projects/hfv3gfs/GMTB/met_workflow/config/met
+GRID_STAT_CONFIG = {PARM_BASE}/GridStatConfig_APCP24_REGRID_cmorph
+
+[config]
+LOG_MET_OUTPUT_TO_METPLUS = no
+LOG_TIMESTAMP_USE_DATATIME = true
+LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H
+LOOP_BY_INIT = true
+
+INIT_BEG = _INIT_BEG_
+INIT_END = _INIT_END_
+#Increment time in seconds (86400 corresponds to 24 hours)
+INIT_INCREMENT =  86400
+INIT_TIME_FMT = %Y%m%d%H
+
+PROCESS_LIST = PcpCombine,GridStat
+
+# run pcp_combine on forecast data
+FCST_PCP_COMBINE_RUN = True
+
+# mode of pcp_combine to use (SUM, ADD, SUBTRACT)
+PCP_COMBINE_METHOD = SUBTRACT
+
+# List of forecast leads to process
+LEAD_SEQ = _LEAD_SEQ_
+
+# Forecast data description variables
+FCST_PCP_COMBINE_INPUT_DATATYPE = GRIB
+
+# GRIB2 data type
+FCST_NATIVE_DATA_TYPE = GRIB
+FCST_MAX_FORECAST = _FCST_MAX_FORECAST_
+FCST_INIT_INTERVAL = _FCST_INIT_INTERVAL_
+
+# Set to false, assuming this data is NOT probabilistic
+FCST_IS_PROB = false
+
+# list of variables to compare
+FCST_VAR1_NAME = _FCST_VAR1_NAME_
+FCST_VAR1_LEVELS = _FCST_VAR1_LEVELS_
+FCST_VAR1_THRESH = ge0.0, ge0.254, ge0.508, ge1.270, ge2.540, ge3.810, ge6.350, ge8.890, ge12.700, ge25.400
+
+OBS_VAR1_NAME = _OBS_VAR1_NAME_
+OBS_VAR1_LEVELS = _OBS_VAR1_LEVELS_
+
+MODEL_TYPE = GFS
+MODEL = GFS
+OB_TYPE = CMORPH
+
+OBS_NATIVE_DATA_TYPE = NETCDF
+
+[filename_templates]
+#suite1 GMTB data
+FCST_PCP_COMBINE_INPUT_TEMPLATE = {init?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.3H}
+FCST_PCP_COMBINE_OUTPUT_TEMPLATE = gfs.{valid?fmt=%Y%m%d%H}_A{level?fmt=%HH}h 
+FCST_GRID_STAT_INPUT_TEMPLATE = gfs.{valid?fmt=%Y%m%d%H}_A{level?fmt=%HH}h
+
+# Obs to match actual GMTB data: CMORPH_20160101_120000_24h.nc
+#OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/CMORPH_{valid?fmt=%Y%m%d}_{valid?fmt=%H}0000.24h.nc
+OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/CMORPH_{valid?fmt=%Y%m%d}_120000_24h.nc
+
+[user_env_vars]
+RES = _RES_
+GRID_VX = _GRID_VX_
+SUITE = _SUITE_
