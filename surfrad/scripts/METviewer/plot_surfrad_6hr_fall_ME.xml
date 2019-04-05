@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plot_spec>
+  <connection>
+    <host>mohawk.rap.ucar.edu:3306</host>
+    <database>mv_gmtb_surfrad</database>
+    <user>mvuser</user>
+    <password>mvuser</password>
+  </connection>
+
+  <rscript>/usr/local/R/bin/Rscript</rscript>
+  
+  <folders>
+    <r_tmpl>/d2/projects/METViewer/src/apps/METviewer/R_tmpl</r_tmpl>
+    <r_work>/d2/projects/METViewer/src/apps/METviewer/R_work</r_work>
+    <plots>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/plots/surfrad_6hr</plots>
+    <data>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/data/surfrad_6hr</data>
+    <scripts>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/scripts/surfrad_6hr</scripts>
+  </folders>
+    
+  <plot name="lead" run="false">
+    <template>series_plot.R_tmpl</template>
+
+    <indep name="fcst_lead">
+      <val label="6" plot_val="">60000</val>
+      <val label="12" plot_val="">120000</val>
+      <val label="18" plot_val="">180000</val>
+      <val label="24" plot_val="">240000</val>
+      <val label="30" plot_val="">300000</val>
+      <val label="36" plot_val="">360000</val>
+      <val label="42" plot_val="">420000</val>
+      <val label="48" plot_val="">480000</val>
+      <val label="54" plot_val="">540000</val>
+      <val label="60" plot_val="">600000</val>
+      <val label="66" plot_val="">660000</val>
+      <val label="72" plot_val="">720000</val>
+      <val label="78" plot_val="">780000</val>
+      <val label="84" plot_val="">840000</val>
+      <val label="90" plot_val="">900000</val>
+      <val label="96" plot_val="">960000</val>
+      <val label="102" plot_val="">1020000</val>
+      <val label="108" plot_val="">1080000</val>
+      <val label="114" plot_val="">1140000</val>
+      <val label="120" plot_val="">1200000</val>
+      <val label="126" plot_val="">1260000</val>
+      <val label="132" plot_val="">1320000</val>
+      <val label="138" plot_val="">1380000</val>
+      <val label="144" plot_val="">1440000</val>
+      <val label="150" plot_val="">1500000</val>
+      <val label="156" plot_val="">1560000</val>
+      <val label="162" plot_val="">1620000</val>
+      <val label="168" plot_val="">1680000</val>
+      <val label="174" plot_val="">1740000</val>
+      <val label="180" plot_val="">1800000</val>
+      <val label="186" plot_val="">1860000</val>
+      <val label="192" plot_val="">1920000</val>
+      <val label="198" plot_val="">1980000</val>
+      <val label="204" plot_val="">2040000</val>
+      <val label="210" plot_val="">2100000</val>
+      <val label="216" plot_val="">2160000</val>
+      <val label="222" plot_val="">2220000</val>
+      <val label="228" plot_val="">2280000</val>
+      <val label="234" plot_val="">2340000</val>
+      <val label="240" plot_val="">2400000</val>
+    </indep>
+
+    <plot_fix>
+      <field name="fcst_init_beg">
+	<set name="fcst_init_beg_2">
+<!--          <val>2016-09-07 00:00:00</val>
+          <val>2016-09-17 00:00:00</val>
+          <val>2016-09-27 00:00:00</val>
+          <val>2016-10-07 00:00:00</val>
+          <val>2016-10-17 00:00:00</val>
+          <val>2016-10-27 00:00:00</val>
+          <val>2016-11-06 00:00:00</val>
+          <val>2016-11-16 00:00:00</val>
+          <val>2016-11-26 00:00:00</val>
+          <val>2017-09-02 00:00:00</val>
+          <val>2017-09-12 00:00:00</val>
+          <val>2017-09-22 00:00:00</val>
+          <val>2017-10-02 00:00:00</val>
+          <val>2017-10-12 00:00:00</val>
+          <val>2017-10-22 00:00:00</val>
+          <val>2017-11-01 00:00:00</val>
+          <val>2017-11-11 00:00:00</val>
+          <val>2017-11-21 00:00:00</val>-->
+	  <val>2016-09-02 12:00:00</val>
+          <val>2016-09-12 12:00:00</val>
+          <val>2016-09-22 12:00:00</val>
+          <val>2016-10-02 12:00:00</val>
+          <val>2016-10-12 12:00:00</val>
+          <val>2016-10-22 12:00:00</val>
+          <val>2016-11-01 12:00:00</val>
+          <val>2016-11-11 12:00:00</val>
+          <val>2016-11-21 12:00:00</val>
+          <val>2017-09-07 12:00:00</val>
+          <val>2017-09-17 12:00:00</val>
+          <val>2017-09-27 12:00:00</val>
+          <val>2017-10-07 12:00:00</val>
+          <val>2017-10-17 12:00:00</val>
+          <val>2017-10-27 12:00:00</val>
+          <val>2017-11-06 12:00:00</val>
+          <val>2017-11-16 12:00:00</val>
+          <val>2017-11-26 12:00:00</val>
+	</set>
+      </field>
+      <field name="vx_mask">
+        <val>Bondville</val>
+        <val>Desert_Rock</val>
+        <val>Fort_Peck</val>
+        <val>Goodwin_Creek</val>
+        <val>Penn_State</val>
+        <val>Sioux_Falls</val>
+        <val>Table_Mountain</val>
+      </field>
+      <field name="init_hour">
+	<val>12</val>
+      </field>	    
+    </plot_fix>
+
+    <series1>
+      <field name="model">
+	<val>suite1_MEDIAN</val>
+	<val>suite2_MEDIAN</val>
+	<val>suite3_MEDIAN</val>
+	<val>suite4_MEDIAN</val>
+      </field>
+    </series1>
+	
+    <series2/>
+	
+    <plot_cond/>
+	
+    <plot_stat>median</plot_stat>
+	
+    <tmpl>
+
+      <val_map name="fcst_var">
+        <pair> <key>DSWRF</key> <val>Downward Shortwave (W m-2)</val> </pair>
+	<pair> <key>DLWRF</key> <val>Downward Longwave (W m-2)</val> </pair>
+	<pair> <key>USWRF</key> <val>Upward Shortwave (W m-2)</val> </pair>
+	<pair> <key>ULWRF</key> <val>Upward Longwave (W m-2)</val> </pair>
+      </val_map>
+
+      <val_map name="stat">
+        <pair> <key>ME</key> <val>Bias</val> </pair>
+        <pair> <key>OBAR</key> <val>OBAR</val> </pair>
+        <pair> <key>FBAR</key> <val>FBAR</val> </pair>
+      </val_map>
+	  
+      <data_file>{dep1_1}_{dep1_1_stat1}_{vx_mask}_Fall_{init_hour?format=HH}Z_median.data</data_file>
+      <plot_file>{dep1_1}_{dep1_1_stat1}_{vx_mask}_Fall_{init_hour?format=HH}Z_median.png</plot_file>
+      <r_file>{dep1_1}_{dep1_1_stat1}_{vx_mask}_Fall_{init_hour?format=HH}Z_median.R</r_file>
+      <title>Median SURFRAD: {vx_mask}\n Fall Aggregation ({init_hour?format=HH}Z initializations)</title>
+      <x_label>Forecast Lead Time (h)</x_label>
+      <y1_label>{dep1_1?map=fcst_var} {dep1_1_stat1?map=stat}</y1_label>
+      <y2_label/>
+      <caption/>
+      <listdiffseries1>list()</listdiffseries1>
+      <listdiffseries2>list()</listdiffseries2>
+    </tmpl>
+	
+        <event_equal>false</event_equal>
+        <event_equal_m>false</event_equal_m>
+        <vert_plot>false</vert_plot>
+        <x_reverse>false</x_reverse>
+        <num_stats>false</num_stats>
+        <indy1_stag>false</indy1_stag>
+        <indy2_stag>false</indy2_stag>
+        <grid_on>true</grid_on>
+        <sync_axes>true</sync_axes>
+        <dump_points1>false</dump_points1>
+        <dump_points2>false</dump_points2>
+        <log_y1>false</log_y1>
+        <log_y2>false</log_y2>
+        <varianceinflationfactor>false</varianceinflationfactor>
+        <plot_type>png16m</plot_type>
+        <plot_height>8.5</plot_height>
+        <plot_width>11</plot_width>
+        <plot_res>72</plot_res>
+        <plot_units>in</plot_units>
+        <mar>c(10,4,5,4)</mar>
+        <mgp>c(1,1,0)</mgp>
+        <cex>1</cex>
+        <title_weight>2</title_weight>
+        <title_size>1.4</title_size>
+        <title_offset/>
+        <title_align>0.5</title_align>
+        <xtlab_orient>1</xtlab_orient>
+        <xtlab_perp>-0.75</xtlab_perp>
+        <xtlab_horiz>0.5</xtlab_horiz>
+        <xtlab_freq>0</xtlab_freq>
+        <xtlab_size>1.2</xtlab_size>
+        <xlab_weight>1</xlab_weight>
+        <xlab_size>1.4</xlab_size>
+        <xlab_offset>1.6</xlab_offset>
+        <xlab_align>0.5</xlab_align>
+        <ytlab_orient>1</ytlab_orient>
+        <ytlab_perp>0.5</ytlab_perp>
+        <ytlab_horiz>0.5</ytlab_horiz>
+        <ytlab_size>1.2</ytlab_size>
+        <ylab_weight>1</ylab_weight>
+        <ylab_size>1.4</ylab_size>
+        <ylab_offset>-2</ylab_offset>
+        <ylab_align>0.5</ylab_align>
+        <grid_lty>3</grid_lty>
+        <grid_col>#808080</grid_col>
+        <grid_lwd>1</grid_lwd>
+        <grid_x>listX</grid_x>
+        <x2tlab_orient>1</x2tlab_orient>
+        <x2tlab_perp>1</x2tlab_perp>
+        <x2tlab_horiz>0.5</x2tlab_horiz>
+        <x2tlab_size>0.8</x2tlab_size>
+        <x2lab_size>0.8</x2lab_size>
+        <x2lab_offset>-0.5</x2lab_offset>
+        <x2lab_align>0.5</x2lab_align>
+        <y2tlab_orient>1</y2tlab_orient>
+        <y2tlab_perp>0.5</y2tlab_perp>
+        <y2tlab_horiz>0.5</y2tlab_horiz>
+        <y2tlab_size>1.2</y2tlab_size>
+        <y2lab_size>1</y2lab_size>
+        <y2lab_offset>1</y2lab_offset>
+        <y2lab_align>0.5</y2lab_align>
+        <legend_box>o</legend_box>
+        <legend_inset>c(0,-0.27)</legend_inset>
+        <legend_ncol>4</legend_ncol>
+        <legend_size>1.2</legend_size>
+        <caption_weight>1</caption_weight>
+        <caption_col>#333333</caption_col>
+        <caption_size>0.8</caption_size>
+        <caption_offset>3</caption_offset>
+        <caption_align>0</caption_align>
+        <ci_alpha>0.05</ci_alpha>
+        <plot_ci>c("none","none","none","none")</plot_ci>
+        <show_signif>c(FALSE,FALSE,FALSE,FALSE)</show_signif>
+        <plot_disp>c(TRUE,TRUE,TRUE,TRUE)</plot_disp>
+        <colors>c("black","red","green","blue")</colors>
+        <pch>c(20,20,20,20)</pch>
+        <type>c("l","l","l","l")</type>
+        <lty>c(1,1,1,1)</lty>
+        <lwd>c(2,2,2,2)</lwd>
+        <con_series>c(1,1,1,1)</con_series>
+        <order_series>c(1,2,3,4)</order_series>
+        <plot_cmd/>
+        <legend>c("Suite 1","Suite 2","Suite 3","Suite 4")</legend>
+        <y1_lim>c()</y1_lim>
+        <y1_bufr>0.08</y1_bufr>
+        <y2_lim>c()</y2_lim>
+        <y2_bufr>0.08</y2_bufr>
+      </plot>
+
+      <plot name="lead_dswrf_me" inherits="lead">
+	<dep>
+	  <dep1><fcst_var name="DSWRF"><stat>ME</stat></fcst_var></dep1>
+	  <dep2></dep2>
+	</dep>
+	<plot_cmd>par(usr=listY1Usr); abline(h=0, lty=1, col="#999999FF");</plot_cmd>
+      </plot>
+
+      <plot name="lead_dlwrf_me" inherits="lead">
+	<dep>
+	  <dep1><fcst_var name="DLWRF"><stat>ME</stat></fcst_var></dep1>
+	  <dep2></dep2>
+	</dep>
+	<plot_cmd>par(usr=listY1Usr); abline(h=0, lty=1, col="#999999FF");</plot_cmd>
+      </plot>
+
+      <plot name="lead_uswrf_me" inherits="lead">
+	<dep>
+	  <dep1><fcst_var name="USWRF"><stat>ME</stat></fcst_var></dep1>
+	  <dep2></dep2>
+	</dep>
+	<plot_cmd>par(usr=listY1Usr); abline(h=0, lty=1, col="#999999FF");</plot_cmd>
+      </plot>
+
+      <plot name="lead_ulwrf_me" inherits="lead">
+	<dep>
+	  <dep1><fcst_var name="ULWRF"><stat>ME</stat></fcst_var></dep1>
+	  <dep2></dep2>
+	</dep>
+	<plot_cmd>par(usr=listY1Usr); abline(h=0, lty=1, col="#999999FF");</plot_cmd>
+      </plot>
+
+</plot_spec>

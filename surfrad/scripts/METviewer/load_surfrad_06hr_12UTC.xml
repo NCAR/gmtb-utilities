@@ -1,0 +1,52 @@
+<load_spec>
+  <connection>
+    <host>mohawk.rap.ucar.edu:3306</host>
+    <database>mv_gmtb_surfrad</database>
+    <user>mvuser</user>
+    <password>mvuser</password>
+  </connection>
+
+  <date_list name="folder_dates">
+    <start>2016010612</start>
+    <end>2017122612</end>
+    <inc>864000</inc>
+    <format>yyyyMMddHH</format>
+  </date_list>
+
+  <met_version>V8.0</met_version>
+
+  <verbose>false</verbose>
+  <insert_size>1</insert_size>
+  <stat_header_db_check>true</stat_header_db_check>
+  <mode_header_db_check>false</mode_header_db_check>
+  <drop_indexes>false</drop_indexes>
+  <apply_indexes>false</apply_indexes>
+  <load_stat>true</load_stat>
+  <load_mode>false</load_mode>
+  <load_mpr>false</load_mpr>
+  <group>GMTB</group>
+
+  <folder_tmpl>/d2/projects/GMTB/Phys_Test_FV3GFSv2/METVX/{suite}/{fcst_init}/metprd</folder_tmpl>
+
+  <load_val>
+    <field name="suite">			
+      <val>suite1</val>		
+      <val>suite2</val>
+      <val>suite3</val>
+      <val>suite4</val>
+    </field>
+	
+    <field name="fcst_init">
+      <date_list name="folder_dates"></date_list>
+    </field>
+  </load_val>
+
+  <line_type>
+    <val>SL1L2</val>
+    <val>CNT</val>
+  </line_type>
+	
+  <load_xml>true</load_xml>
+  <load_note>Database containing point-stat data for GMTB Physics Suite Testing (FV3GFSv2). Loaded on 02/13/2019.</load_note>
+
+</load_spec>
