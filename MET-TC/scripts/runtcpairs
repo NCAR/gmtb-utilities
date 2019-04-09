@@ -1,0 +1,18 @@
+tc_pairs -adeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/TRACKER-Phys_Test/suite1/*/track*64*  \
+         -adeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/TRACKER-Phys_Test/suite2/*/track*64*  \
+         -adeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/TRACKER-Phys_Test/suite3/*/track*64*  \
+         -adeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/TRACKER-Phys_Test/suite4/*/track*64*  \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/nhc/2015      \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/nhc/2016      \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/nhc/2017      \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/nhc/2018      \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/DECKS/b*.dat   \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/bdecks_ral/2015      \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/bdecks_ral/2016       \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/bdecks_ral/2017       \
+         -bdeck /scratch4/BMC/gmtb/MET-TC_2019advphystest/BDECKS/bdecks_ral/2018       \
+         -config /scratch4/BMC/gmtb/MET-TC_2019advphystest/config/TCPairsConfig_phys     \
+         -out tc_pairs_phystest           \
+         -v 4 -log run_phystest.log
+
+

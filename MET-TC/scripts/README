@@ -1,0 +1,45 @@
+Prepared by:  Man Zhang - NOAA/GSD and CU/CIRES (Man.Zhang@noaa.gov)
+
+The purpose of MET-TC verification
+
+The purpose of this tool is to enable users to apply the Model Evaluation Tools - Tropical Cyclone (MET-TC) to
+their tropical cyclone datasets and evaluation studies. MET-TC is intended for use with model forecasts run 
+through a vortex tracking software or with operational model forecasts in Automated Tropical Cyclone Forecast 
+(ATCF) file format.
+
+Chapter 17 of MET Version 8.0 (METv8.0) User's Guide provides an overview of MET-TC and detailed information of 
+its components. At GMTB, we use prepuild METv8.0 on NOAA's theia machine.
+
+
+- set up METV8.0 environment on theia:
+
+on theia:
+module use /contrib/modulefiles
+module load met/8.0
+module load nco wgrib R ncview
+setenv MET_FONT_DIR /contrib/met/tutorial_data/8.0/fonts/
+setenv MET_BASE /contrib/met/8.0/share/met/
+setenv RSCRIPTS_BASE $MET_BASE/Rscripts/
+setenv MET_INSTALL_DIR /contrib/met/8.0/
+
+- run TC-Pairs
+
+The TC-Pairs tool provides verification for tropical cyclone forecasts in ATCF file format. It 
+matches an ATCF format tropical cyclone (TC) forecast with a second ATCF format reference TC dataset 
+(most commonly the Best Track analysis)
+
+TC-Pairs tool expects two input data source in order to generate matched pairs and subsequent error statistcs. 
+The expected input for MET-TC is an ATCF format file from model output, or the operational aids files with the
+operational model output for the 'adeck' and the NHC best track analysis (BEST) for the 'bdeck'. The BEST is 
+subjectively smoothed representation of the storm's location and intensity over its lifetime. The track and intensity
+values are based on a retrospective assessment of all available observations of the storm 
+
+see runtcpairs for example.
+
+- run TC-Stat
+
+
+
+
+see runtcfilter for example
+

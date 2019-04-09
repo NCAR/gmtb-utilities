@@ -1,0 +1,19 @@
+Author: Man Zhang and Ligia Bernardet, NOAA/GSD and GMTB
+        Man.Zhang@noaa.gov
+
+
+The ability to accurately predict TC genesis is an important operational need. The purpose of this study is to develop reliable TC genesis forecasts based on global model output to serve as skillful guidance for forecasters. TC genesis was identified using for all basins using the public release of the GFDL Vortex Tracker v3.9a supported by the DTC (https://dtcenter.org/HurrWRF/users/downloads/index.tracker.php; Biswas et al. 2018).  The script and fix files used for running the genesis tracker can be found in https://github.com/NCAR/emc-physics-workflow/tree/master/wrkflw_components/05_tracker (refer to script loop_genesis.ksh).
+
+The default configuration of the GFDL Vortex Tracker for genesis was applied to the 0.25 degree post-processed model output for the band of latitudes between 30°S and 30°N. It was noticed that the output files contained a large and unrealistic number of forecast genesis. A postprocessing step was then applied to eliminate spurious cyclogenesis by:
+a) Retaining only storms that lasted for at least 24-h with the maximum sustained surface wind speed 34 kt or more. 
+b) Removing any model genesis forecasts whose forecast genesis time is at forecast hour 000. We assume that these are existing TCs - not forecasts of TC genesis. 
+c) Removing any model genesis forecasts whose forecast genesis time is greater than 120h leading time. In this way, we examine the model performance in the first 5 days as most of the operational hurricane model does.
+
+This filtering process eliminated many spurious storms. In the future, we believe additional criteria should be considered to assess the thermal structure of the cyclone, such as the presence of warm core in the mid-troposphere and the Cyclone Phase Space (CPS) diagnostics (Hart, 2003).  This additional criteria could eliminate some of the false alarms produced by the models, especially at higher latitudes. In spite of these caveats, we decided to include the genesis verification in this report as it provides a measure of the differences among the suites and a benchmark for future assessments.
+
+The model TC genesis events were then verified  with the observed using a script adapted from Halperin (Halperin et. al. 2013). The method is currently done to match as closely as possible the NHC Tropical Weather Outlook (TWO), a product that provides categorical and probabilistic forecasts of TC genesis.  In this method, for each model genesis forecast, find all entries in the best-track that (i) have a time stamp that matches the valid time of the model genesis forecasts and (ii) have a lat/lon within 5 degrees of the model indicated TC lat/lon at the valid time of the model genesis forecast.
+If the initialization time is 0-120 h before the best-track genesis time (defined as first entry of TD or TS in the b-decks), then we have a “hit”
+If the initialization time is > 120 h before the best-track genesis time, then we have a false alarm (FA).
+If the initialization time is after the best-track genesis time, but still within 72h temporal and 5 degree spatial tolerance, then we have a late genesis (LG).
+Forecast genesis that does not meet the criteria for hit or late genesis is considered as a false alarm.	
+
