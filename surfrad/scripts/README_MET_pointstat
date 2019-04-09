@@ -1,0 +1,38 @@
+Author: Tracy Hertneky (hertneky@ucar.edu)
+
+Plot time series of seasonal aggregations of SURFRAD versus model data
+
+*****Steps for running*****
+
+1. Process SURFRAD observations as outlined in the gmtb-utilities/surfrad/scripts/README
+   - Set the time window in ascii2nc to match that of the model data.
+     For example, if your model energy budget fields are 6-hourly averages, then
+     you will want to use a 6 hour time window in ascii2nc for the SURFRAD data.
+
+2. Modify and run the run_point_stat_06h.ksh
+   - Modify directory paths BASE, SCRIPTS, OBS_DIR, LOG_DIR, MET_EXE_ROOT
+   - List which model configs to run (e.g. SUITE_LIST="suite1 suite2 ...")
+   - List the forecast hours to evaluate (e.g. FCST_TIME_LIST="006 012 018 ...")
+   - Set the time window
+     -TW_LIST="21600"        -time window in seconds
+     -TH_HHMMSS="060000"     -time window in HHMMSS
+   - List the stations to evaluate (e.g. STID_LIST="bon dra ...")
+   - List the field to evaluate specified by grib number (e.g. GRIB="204")
+   - Point to the full path of the point-stat config file
+     - CONFIG_SURF_MEDIAN=path_to_your_config
+       - Your config file will list the field and level to run as well as any masks
+
+   The script will loop through all suites, initiaizations (specified in INIT_PATH),
+   time windows and forecast times and run point-stat.
+
+   Note: Running point-stat for a number of configurations, forecast hours, stations, and
+   initializations can take many hours/days
+
+3. Vizualization can be done in METviewer if you have the ability to access this tool
+   - Create a database in the METviewer database and load your data to that database
+     - Sample load scripts are provided in gmtb-utilities/surfrad/scripts/METviewer
+     - Command: mv_load.sh load_surfrad_06hr_00UTC.xml >& log/load_surfrad_06hr_00UTC.log
+   - Run METviewer bach scripts to create time series of seasonal aggregations
+     - Sample batch scripts are provided in gmtb-utilities/surfrad/scripts/METviewer
+       - These batch scritps create plots for FBAR and ME, but you could use other metrics
+     - Command: mv_batch.sh plot_surfrad_6hr_fall.xml >& log/plot_surfrad_6hr_fall.log

@@ -1,0 +1,44 @@
+Tracy Hertneky: hertneky@ucar.edu
+For GMTB 2019 advanced physics tests
+
+Github
+git clone https://github.com/NCAR/gmtb-utilities
+git checkout gmtb_2019advphystest
+cd gmtb-utilities/ceres/scripts
+
+Instructions for creating seasonal mean error plots for energy budget variables.
+The model output for these variables is 6 hour averages and CERES data used is monthly means.
+Variables: Surface: DSWRF, USWRF, DLWRF, ULWRF
+           TOA: ULWRF, USWRF, Energy Balance
+
+1. Run parse_forecasts.ksh
+   Parse the forecasts using VALID date into file_lists for each suite, season, and day (1, 3, 5, 10 day forecast) or full year
+    - A day includes a full 24-h period (4 6-hrly forecasts)
+    - Note: I ran once for 2016 and then again for 2017, which just appends to the list (did not include 2015/2018 cases)
+   *Uses the ndate executable
+   **Will need to modify paths
+
+2. Run run_pcp_combine.ksh
+   This will run MET pcp_combine on each file list from the model and compute the mean for specified fields
+    - Current fields processed: surface DSWRF, USWRF, DLWRF, ULWRF and top of atmosphere USWRF, ULWRF
+    - Note: TOA fieds are specified by record number, so be sure this points to the correct record for your data
+   This will also regrid the seasonal mean forecast data to the CERES grid (necessary to create difference fields)
+    - Note: The forecast and obs grids cover slightly different lat/lon ranges, so when regridding, some
+      missing values will be present in the regridded field
+   *Currently met-development branch only - to be released in MET/8.1 tentatively May 1st 2019
+   **Will need to modify paths
+
+3. Run run_pcp_combine_ceres.ksh
+   Runs MET pcp_combine commands for CERES to compute seasonal/year means for the same fields as the model.
+    - There's not really a cleaner way to do this at this time. Would like to add the capabiity to MET to 
+     not have to specify file for each individual index/level/record/etc
+   *Currently met-development branch only - to be released in MET/8.1 tentatively May 1st 2019
+   **Will need to modify paths
+
+4. Run run_ceres_panel_plot.ksh or run_ceres_panel_plot_balance.ksh
+    - Runs an NCL script to create a panel plot of CERES, model, and difference (model-CERES).
+    - Variable available in run_ceres_panel_plot.ksh: DSWRF, USWRF, DLWRF, ULWRF, USWRF_TOA, ULWRF_TOA
+    - Fields available in run _ceres_panel_plot_balance.ksh: Net Energy Balance TOA
+      - Also calculates an average over the whole globe using an area weighted mean to print on plot
+    *Ran with NCLv6.6.2 (panel title not available for some older versions)
+    **Will need to modify paths in shell script
