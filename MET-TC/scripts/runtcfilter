@@ -1,0 +1,15 @@
+#The input TCST file includes tracks for 00, 06, 12, and 18z initializations.
+#Select only initialization hour 00 and data for HWRF,GFDL,OFCL
+#-init_hour 00  \
+#-event_equal TRUE  \
+#-basin EP   \
+#-cyclone 14 \
+#-lead 00
+#-column_str LEVEL HU,TY
+#-job filter -dump_row glb215_water.tcst  \
+#-job filter by -water_only TRUE -dump_row tmp.tcst \
+tc_stat \
+-lookin tc_pairs_phys_glb2.tcst  \
+-basin CP  \
+-job filter  -dump_row tc_pairs_phys_glb2_CP.tcst 
+

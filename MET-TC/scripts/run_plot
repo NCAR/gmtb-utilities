@@ -1,0 +1,26 @@
+#-series LEVEL \
+#-filter '-amodel HWRF' \
+#-no_ee       \   turn off even equalization
+#-filter '-amodel GFTS,GFSO' \
+##-dep TK_ERR,ABS\(AMAX_WIND-BMAX_WIND\)   \
+#-dep TK_ERR,ALTK_ERR,CRTK_ERR,AMAX_WIND-BMAX_WIND,ABS\(AMAX_WIND-BMAX_WIND\)   \
+##-dep ANE_WIND_34-BNE_WIND_34 \
+#-lead 0,6,12,18,24,30,36,42,48,54,60,66,72,78,84,90,96,102,108,114,120   \
+#-ylim -35,20   \
+#-series_ci FALSE \
+Rscript plot_tcmpr.R \
+-lookin tc_pairs_phys_glb2_EP.tcst  \
+-filter '-amodel SUI1,SUI2,SUI3,SUI4' \
+-ylim -60,30   \
+-series_ci FALSE \
+-dep ASE_WIND_34-BSE_WIND_34 \
+-lead 0,12,24,36,48,60,72,84,96,108,120   \
+-plot MEAN  \
+-ylab 'Mean R34 Error in EP Basin'
+#-ylab 'Along Track Error (nm)' 
+#-ylab 'R34 Error'
+#-ylab 'Along Track Error (nm)'
+#-ylab 'Absolute Intensity Error (kt)'
+#-ylab 'Track Error (nm)'  
+##-ylab 'Track Error (nm)'
+##-ylab 'Intensity Error (kt)'
