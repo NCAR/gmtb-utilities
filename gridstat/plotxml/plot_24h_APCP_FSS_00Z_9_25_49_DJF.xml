@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plot_spec>
+    <connection>
+        <host>mohawk.rap.ucar.edu:3306</host>
+        <database>mv_GMTB_Phys_Test</database>
+        <user>mvuser</user>
+	<password>mvuser</password>
+	<management_system>mariadb</management_system>
+    </connection>
+    <rscript>/usr/local/R/bin/Rscript</rscript>
+    <folders>
+	<r_tmpl>/d2/projects/METViewer/src/apps/METviewer/R_tmpl</r_tmpl>
+	<r_work>/d2/projects/METViewer/src/apps/METviewer/R_work</r_work>
+	<plots>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/plots</plots>
+	<data>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/data</data>
+	<scripts>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/scripts</scripts>
+    </folders>
+    <plot>
+        <template>series_plot.R_tmpl</template>
+        <dep>
+            <dep1>
+                <fcst_var name="APCP_24">
+                    <stat>NBR_FSS</stat>
+                </fcst_var>
+            </dep1>
+            <dep2/>
+        </dep>
+        <series1>
+            <field name="model">
+                <val>GFS_suite1_0p25_FCST</val>
+                <val>GFS_suite2_0p25_FCST</val>
+                <val>GFS_suite3_0p25_FCST</val>
+                <val>GFS_suite4_0p25_FCST</val>
+            </field>
+            <field name="fcst_lead">
+                <val>840000</val>
+                <val>1320000</val>
+                <val>2280000</val>
+            </field>
+        </series1>
+        <series2/>
+        <plot_fix>
+            <field equalize="true" name="vx_mask">
+		    <val>NH</val>
+		    <val>SH</val>
+		    <val>TROP</val>
+            </field>
+            <field equalize="true" name="init_hour">
+                <set name="init_hour_1">
+                    <val>00</val>
+                </set>
+            </field>
+            <field equalize="true" name="obtype">
+                <set name="obtype_2">
+                    <val>CMORPH</val>
+                </set>
+            </field>
+            <field equalize="true" name="interp_mthd">
+                <set name="interp_mthd_3">
+                    <val>NBRHD_SQUARE</val>
+                </set>
+            </field>
+            <field equalize="true" name="interp_pnts">
+		    <val>9</val>
+		    <val>25</val>
+		    <val>49</val>
+            </field>
+            <field equalize="true" name="fcst_init_beg">
+                <set name="fcst_init_beg_5">
+			<val>2016-01-01 00:00:00</val>
+			<val>2016-01-06 12:00:00</val>
+			<val>2016-01-11 00:00:00</val>
+			<val>2016-01-16 12:00:00</val>
+			<val>2016-01-21 00:00:00</val>
+			<val>2016-01-26 12:00:00</val>
+			<val>2016-01-31 00:00:00</val>
+			<val>2016-02-05 12:00:00</val>
+			<val>2016-02-10 00:00:00</val>
+			<val>2016-02-15 12:00:00</val>
+			<val>2016-02-20 00:00:00</val>
+			<val>2016-02-25 12:00:00</val>
+			<val>2016-12-01 12:00:00</val>
+			<val>2016-12-06 00:00:00</val>
+			<val>2016-12-11 12:00:00</val>
+			<val>2016-12-16 00:00:00</val>
+			<val>2016-12-21 12:00:00</val>
+			<val>2016-12-26 00:00:00</val>
+			<val>2016-12-31 12:00:00</val>
+			<val>2017-01-05 00:00:00</val>
+			<val>2017-01-10 12:00:00</val>
+			<val>2017-01-15 00:00:00</val>
+			<val>2017-01-20 12:00:00</val>
+			<val>2017-01-25 00:00:00</val>
+			<val>2017-01-30 12:00:00</val>
+			<val>2017-02-04 00:00:00</val>
+			<val>2017-02-09 12:00:00</val>
+			<val>2017-02-14 00:00:00</val>
+			<val>2017-02-19 12:00:00</val>
+			<val>2017-02-24 00:00:00</val>
+			<val>2017-12-01 00:00:00</val>
+			<val>2017-12-06 12:00:00</val>
+			<val>2017-12-11 00:00:00</val>
+			<val>2017-12-16 12:00:00</val>
+			<val>2017-12-21 00:00:00</val>
+			<val>2017-12-26 12:00:00</val>
+			<val>2017-12-31 00:00:00</val>
+                </set>
+            </field>
+        </plot_fix>
+        <plot_cond/>
+        <indep equalize="true" name="fcst_thresh">
+            <val label="&gt;=0.254" plot_val="">&gt;=0.254</val>
+            <val label="&gt;=0.508" plot_val="">&gt;=0.508</val>
+            <val label="&gt;=1.270" plot_val="">&gt;=1.270</val>
+            <val label="&gt;=2.540" plot_val="">&gt;=2.540</val>
+            <val label="&gt;=3.810" plot_val="">&gt;=3.810</val>
+            <val label="&gt;=6.350" plot_val="">&gt;=6.350</val>
+            <val label="&gt;=8.890" plot_val="">&gt;=8.890</val>
+            <val label="&gt;=12.700" plot_val="">&gt;=12.700</val>
+            <val label="&gt;=25.400" plot_val="">&gt;=25.400</val>
+        </indep>
+        <agg_stat>
+            <agg_nbrcnt>true</agg_nbrcnt>
+            <boot_repl>1000</boot_repl>
+            <boot_random_seed/>
+            <boot_ci>perc</boot_ci>
+            <eveq_dis>false</eveq_dis>
+            <cache_agg_stat>false</cache_agg_stat>
+        </agg_stat>
+        <plot_stat>median</plot_stat>
+        <tmpl>
+	    <data_file>DJF/plot_24h_APCP_{vx_mask}_FSS_00Z_f84_132_228_nb{interp_pnts}_DJF.data</data_file>
+	    <plot_file>DJF/plot_24h_APCP_{vx_mask}_FSS_00Z_f84_132_228_nb{interp_pnts}_DJF.png</plot_file>
+	    <r_file>DJF/plot_24h_APCP_{vx_mask}_FSS_00Z_f84_132_228_nb{interp_pnts}_DJF.R</r_file>
+	    <title>24-h Accumulated Precipitation Fractions Skill Score\n{vx_mask} (2016/17 DJF)</title>
+            <x_label>Threshold (mm)</x_label>
+            <y1_label>Fractions Skill Score</y1_label>
+            <y2_label/>
+	    <caption>CI=95%  OBS=CMORPH  INIT=00 UTC  NBR={interp_pnts}</caption>
+            <listdiffseries1>list()</listdiffseries1>
+            <listdiffseries2>list()</listdiffseries2>
+        </tmpl>
+        <event_equal>true</event_equal>
+        <vert_plot>false</vert_plot>
+        <x_reverse>false</x_reverse>
+        <num_stats>false</num_stats>
+        <indy1_stag>true</indy1_stag>
+        <indy2_stag>false</indy2_stag>
+        <grid_on>true</grid_on>
+        <sync_axes>false</sync_axes>
+        <dump_points1>false</dump_points1>
+        <dump_points2>false</dump_points2>
+        <log_y1>false</log_y1>
+        <log_y2>false</log_y2>
+        <varianceinflationfactor>false</varianceinflationfactor>
+        <plot_type>png16m</plot_type>
+        <plot_height>8.5</plot_height>
+        <plot_width>11</plot_width>
+        <plot_res>72</plot_res>
+        <plot_units>in</plot_units>
+        <mar>c(8,4,5,4)</mar>
+        <mgp>c(1,1,0)</mgp>
+        <cex>1</cex>
+        <title_weight>2</title_weight>
+        <title_size>1.5</title_size>
+        <title_offset>0</title_offset>
+        <title_align>0.5</title_align>
+        <xtlab_orient>1</xtlab_orient>
+        <xtlab_perp>-0.75</xtlab_perp>
+        <xtlab_horiz>0.5</xtlab_horiz>
+        <xtlab_freq>0</xtlab_freq>
+        <xtlab_size>1.25</xtlab_size>
+        <xlab_weight>1</xlab_weight>
+        <xlab_size>1.4</xlab_size>
+        <xlab_offset>2</xlab_offset>
+        <xlab_align>0.5</xlab_align>
+        <ytlab_orient>1</ytlab_orient>
+        <ytlab_perp>0.5</ytlab_perp>
+        <ytlab_horiz>0.5</ytlab_horiz>
+        <ytlab_size>1.25</ytlab_size>
+        <ylab_weight>1</ylab_weight>
+        <ylab_size>1.4</ylab_size>
+        <ylab_offset>-2</ylab_offset>
+        <ylab_align>0.5</ylab_align>
+        <grid_lty>3</grid_lty>
+        <grid_col>#cccccc</grid_col>
+        <grid_lwd>1</grid_lwd>
+        <grid_x>listX</grid_x>
+        <x2tlab_orient>1</x2tlab_orient>
+        <x2tlab_perp>1</x2tlab_perp>
+        <x2tlab_horiz>0.5</x2tlab_horiz>
+        <x2tlab_size>0.8</x2tlab_size>
+        <x2lab_size>0.8</x2lab_size>
+        <x2lab_offset>-0.5</x2lab_offset>
+        <x2lab_align>0.5</x2lab_align>
+        <y2tlab_orient>1</y2tlab_orient>
+        <y2tlab_perp>0.5</y2tlab_perp>
+        <y2tlab_horiz>0.5</y2tlab_horiz>
+        <y2tlab_size>1</y2tlab_size>
+        <y2lab_size>1</y2lab_size>
+        <y2lab_offset>1</y2lab_offset>
+        <y2lab_align>0.5</y2lab_align>
+        <legend_box>o</legend_box>
+        <legend_inset>c(0, -.25)</legend_inset>
+        <legend_ncol>4</legend_ncol>
+        <legend_size>1</legend_size>
+        <caption_weight>1</caption_weight>
+        <caption_col>#333333</caption_col>
+        <caption_size>1</caption_size>
+        <caption_offset>3</caption_offset>
+        <caption_align>0</caption_align>
+        <ci_alpha>0.05</ci_alpha>
+        <plot_ci>c("boot","boot","boot","boot","boot","boot","boot","boot","boot","boot","boot","boot")</plot_ci>
+        <show_signif>c(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE)</show_signif>
+        <plot_disp>c(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)</plot_disp>
+        <colors>c("#000000FF","#000000FF","#000000FF","#ff0000FF","#ff0000FF","#ff0000FF","#008000FF","#008000FF","#008000FF","#0000ffFF","#0000ffFF","#0000ffFF")</colors>
+        <pch>c(20,20,20,20,20,20,20,20,20,20,20,20)</pch>
+        <type>c("b","b","b","b","b","b","b","b","b","b","b","b")</type>
+        <lty>c(1,2,3,1,2,3,1,2,3,1,2,3)</lty>
+        <lwd>c(3,3,3,3,3,3,3,3,3,3,3,3)</lwd>
+        <con_series>c(1,1,1,1,1,1,1,1,1,1,1,1)</con_series>
+        <order_series>c(1,2,3,4,5,6,7,8,9,10,11,12)</order_series>
+        <plot_cmd>abline(h=0.5)</plot_cmd>
+        <legend>c("Suite1 (f84)","Suite1 (f132)","Suite1 (f228)","Suite2 (f84)","Suite2 (f132)","Suite2 (f228)","Suite3 (f84)","Suite3 (f132)","Suite3 (f228)","Suite4 (f84)","Suite4 (f132)","Suite4 (f228)")</legend>
+        <y1_lim>c()</y1_lim>
+        <y1_bufr>0.04</y1_bufr>
+        <y2_lim>c()</y2_lim>
+    </plot>
+</plot_spec>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <plot_spec>
+    <connection>
+      <host>mohawk.rap.ucar.edu:3306</host>
+      <database>mv_GMTB_Phys_Test</database>
+      <user>mvuser</user>
+      <password>mvuser</password>
+      <management_system>mariadb</management_system>
+    </connection>
+    
+    <rscript>/usr/local/R/bin/Rscript</rscript>
+    <folders>
+      <r_tmpl>/opt/vxwww/tomcat/webapps/metviewer/R_tmpl</r_tmpl>
+      <r_work>/opt/vxwww/tomcat/webapps/metviewer/R_work</r_work>
+      <plots>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/plots/scorecard/</plots>
+      <data>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/data/scorecard/</data>
+      <scripts>/d2/projects/GMTB/Phys_Test_FV3GFSv2/metv/scripts/scorecard/</scripts>
+    </folders>
+
+    <plot>
+      <view_value>false</view_value>
+      <view_symbol>true</view_symbol>
+      <view_legend>true</view_legend>
+      <printSQL>true</printSQL>
+      <stat_flag>NCAR</stat_flag>
+      <stat>DIFF_SIG</stat>
+      <threshold_file>threshold_config.xml</threshold_file>      
+
+      <template>scorecard.R_tmpl</template>
+
+      <plot_fix>
+        <field name="model">
+          <val name="GFS_suite2_0p25_G218" />
+          <val name="GFS_suite1_0p25_G218" />
+
+        </field>
+        <field name="fcst_init_beg">
+          <val name="2016-01-06 12:00:00" />
+          <val name="2017-12-26 12:00:00" />
+        </field>
+
+	<field name="init_hour">
+          <val name="12" />
+        </field>
+      </plot_fix>
+
+      <rows>
+        <field name="stat">
+          <val name="GSS" />
+          <field name="fcst_var">
+	    <val name="APCP_06" label="6-h Accum Pcp"/>
+            <field name="fcst_thresh">
+              <val name="&gt;=0.254 "/>
+              <val name="&gt;=0.508 "/>
+              <val name="&gt;=1.270 "/>
+              <val name="&gt;=2.540 "/>
+              <val name="&gt;=3.810 "/>
+              <val name="&gt;=6.350 "/>
+              <val name="&gt;=8.890 "/>
+              <val name="&gt;=12.700" />
+              <val name="&gt;=25.400" />
+            </field>
+          </field>
+	</field>
+      </rows>
+
+      <columns>
+        <field name="vx_mask">
+          <val name="CONUS" />
+          <field name="fcst_lead">
+            <val name="60000" label="f06" />
+            <val name="120000" label="f12" />
+            <val name="180000" label="f18" />
+            <val name="240000" label="f24" />
+            <val name="300000" label="f30" />
+            <val name="360000" label="f36" />
+            <val name="420000" label="f42" />
+            <val name="480000" label="f48" />
+            <val name="540000" label="f54" />
+            <val name="600000" label="f60" />
+            <val name="660000" label="f66" />
+            <val name="720000" label="f72" />
+            <val name="780000" label="f78" />
+            <val name="840000" label="f84" />
+            <val name="900000" label="f90" />
+            <val name="960000" label="f96" />
+            <val name="1020000" label="f102" />
+            <val name="1080000" label="f108" />
+            <val name="1140000" label="f114" />
+            <val name="1200000" label="f120" />
+            <val name="1260000" label="f126" />
+            <val name="1320000" label="f132" />
+            <val name="1380000" label="f138" />
+            <val name="1440000" label="f144" />
+            <val name="1500000" label="f150" />
+            <val name="1560000" label="f156" />
+            <val name="1620000" label="f162" />
+            <val name="1680000" label="f168" />
+            <val name="1740000" label="f174" />
+            <val name="1800000" label="f180" />
+            <val name="1860000" label="f186" />
+            <val name="1920000" label="f192" />
+            <val name="1980000" label="f198" />
+            <val name="2040000" label="f204" />
+            <val name="2100000" label="f210" />
+            <val name="2160000" label="f216" />
+            <val name="2220000" label="f222" />
+            <val name="2280000" label="f228" />
+            <val name="2340000" label="f234" />
+            <val name="2400000" label="f240" />
+          </field>
+        </field>
+
+      </columns>
+
+      <agg_stat>true</agg_stat>
+      <boot_repl>1000</boot_repl>
+      <boot_random_seed>1</boot_random_seed>
+
+      <tmpl>
+        <data_file>scorecard_G218_APCP06_12UTC_s2s1.data</data_file>
+        <plot_file>scorecard_G218_APCP06_12UTC_s2s1.png</plot_file>
+        <title>MET output (20160101-20171231 12 UTC inits)</title>
+      </tmpl>
+
+    </plot>
+  </plot_spec>
+
