@@ -25,7 +25,7 @@ begin
 
 ; day_of_choice = 1 is NOT recommended due to a plethora of missing data.
 
-  length_of_sim = 48
+  length_of_sim = 48 ; hours
 
   f = addfile(dir+fname,"r")
 
