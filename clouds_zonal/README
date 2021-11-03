@@ -1,0 +1,14 @@
+Author: Xia Sun - CIRES/NOAA GSL, xia.sun@noaa.gov
+
+Date: 2020-2021
+
+Info: Scripts developed under the Global T&E Project at Developmental Testbed Center.
+
+
+Purpose: 
+
+1) zonal_radiation_fluxes.ncl: This script calculates the zonal averages of radiation fluxes at the surface and top of the atmosphere from CERES dataset and multiple GFS global model run outputs.
+
+2) zonal_all_clear_sky_diff.ncl: This script calculates the zonal averages of differences between All-sky and Clear-sky conditions from CERES dataset and multiple GFS global model run outputs.
+
+3) zonal_lwp_iwp.ncl: This script calculates the zonal averages of liquid water path and ice water path from CERES dataset and multiple GFS global run outputs.
